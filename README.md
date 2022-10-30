@@ -7,4 +7,5 @@
 
 - Fix issue with duplicate first/last names (FIXED)
 - Fix issue with removing a users old rank when giving them new one
+- Seperate Express and Discord.js code
 - Continue working on NodeJS server with drag and drop feature
