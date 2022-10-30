@@ -42,7 +42,9 @@ client.on('ready', async () => {
 
   // load in CSV file
   fs.createReadStream('dummydata.csv')
-    .pipe(csv(['FirstName', 'LastName', 'StudentNumber', 'CourseName']))
+    .pipe(
+      csv(['FirstName', 'LastName', 'StudentNumber', 'Level', 'CourseName'])
+    )
     .on('data', (data) => results.push(data))
     .on('end', () => {
       console.log('Successfully loaded in CSV file.');
@@ -78,29 +80,42 @@ client.on('messageCreate', async (message) => {
     );
   }
 
-  // outer for loop is for results object
-  // inner for loop is for users message content
-  for (let i = 0; i < results.length; i++) {
-    for (let j = 0; j < messageArray.length; j++) {
-      if (messageArray[j].toUpperCase() === Object.values(results[i])[j]) {
-        matchFound++;
-      }
+  console.log(results);
 
-      if (matchFound === 4) break;
+  if (messageArray.length === 5) {
+    // outer for loop is for results object
+    // inner for loop is for users message content
+    for (let i = 0; i < results.length; i++) {
+      for (let j = 0; j < messageArray.length; j++) {
+        if (messageArray[j].toUpperCase() === Object.values(results[i])[j]) {
+          matchFound++;
+        }
+
+        if (matchFound === 5) break;
+      }
+    }
+  } else {
+    let courseName = messageArray[4] + messageArray[5];
+    messageArray = messageArray.slice(0, 4);
+    messageArray = [...messageArray, courseName];
+
+    outerloop: for (let i = 0; i < results.length; i++) {
+      // reset matchFound for every row
+      matchFound = 0;
+      for (let j = 0; j < messageArray.length; j++) {
+        if (messageArray[j].toUpperCase() === Object.values(results[i])[j]) {
+          matchFound++;
+        }
+        if (matchFound === 5) break outerloop;
+      }
     }
   }
 
-  // total 4 rows should match, so if matchfound = 4
+  // total 5 rows should match, so if matchfound = 5
   // all rows matched and student is successfully identified
-  if (matchFound === 4) {
-    let userRole = '';
+  if (matchFound === 5) {
+    let userRole = messageArray[4];
     let userLevel = messageArray[3];
-
-    if (messageArray.length === 5) {
-      userRole = messageArray[4];
-    } else {
-      userRole = messageArray[4] + messageArray[5];
-    }
 
     // grab all members from server to find match
     const members = await client.guilds.cache.get(guildID).members.fetch();
