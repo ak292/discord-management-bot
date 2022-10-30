@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node discordIndex.js"
+    "start": "concurrently \"node expressServer.js\" \"node discordServer.js\""
   },
   "type": "module",
   "keywords": [],

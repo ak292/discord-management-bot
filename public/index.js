@@ -1,13 +1,17 @@
-// const csvButton = document.getElementById('submit-button');
-// csvButton.addEventListener('click', async function (event) {
-//   const csvName = event.target.value;
-//   const options = {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: csvName,
-//   };
+const csvButton = document.getElementById('submit-button');
+const input = document.getElementById('input-csv');
 
-//   await fetch('/csv', options);
-// });
+csvButton.addEventListener('click', async function (event) {
+  const csvName = { val: input.value };
+  input.value = '';
+
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(csvName),
+  };
+
+  await fetch('/csv', options);
+});
