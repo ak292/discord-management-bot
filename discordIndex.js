@@ -9,9 +9,12 @@ require('dotenv/config');
 const csv = require('csv-parser');
 const fs = require('fs');
 
+// guildID is the server ID (change as you wish)
 const guildID = '1034878587129569401';
+// results array from CSV file
 const results = [];
 
+// nodeJS configuration
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,8 +24,8 @@ app.use(express.static(filePath));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// discord.js configuration
 const client = new Client({
-  // partials: [Partials.Channel, Partials.Message],
   partials: [Partials.Channel],
   intents: [
     GatewayIntentBits.Guilds,
@@ -48,9 +51,9 @@ client.on('ready', async () => {
 
 client.on('guildMemberAdd', (member) => {
   member.send(
-    `Welcome to the server ${member.user.username}. If you wish to gain full access to the server, please type your first name, surname, student number, and course in one message seperated by spaces.`
+    `Welcome to the server ${member.user.username}. If you wish to gain full access to the server, please type your first name, surname, student number, level (L4/L5/L6), and course in one message seperated by spaces.`
   );
-  member.send(`For example: Josh Smith UP12345 Computer Science`);
+  member.send(`For example: Josh Smith UP12345 L5 Computer Science`);
 });
 
 client.on('messageCreate', async (message) => {
@@ -66,7 +69,14 @@ client.on('messageCreate', async (message) => {
 
   let matchFound = 0;
   let messageArray = message.content.split(' ');
-  console.log(messageArray);
+
+  // if user message is longer than 5 or 6 length, they have
+  // incorrectly formatted their message (eg. extra spaces)
+  if (messageArray.length !== 5 && messageArray.length !== 6) {
+    return message.reply(
+      'Incorrect information provided. Please make sure you have spelled everything correctly and followed the proper format. Example: Josh Smith UP12345 L5 Computer Science'
+    );
+  }
 
   // outer for loop is for results object
   // inner for loop is for users message content
@@ -83,26 +93,58 @@ client.on('messageCreate', async (message) => {
   // total 4 rows should match, so if matchfound = 4
   // all rows matched and student is successfully identified
   if (matchFound === 4) {
+    let userRole = '';
+    let userLevel = messageArray[3];
+
+    if (messageArray.length === 5) {
+      userRole = messageArray[4];
+    } else {
+      userRole = messageArray[4] + messageArray[5];
+    }
+
     // grab all members from server to find match
     const members = await client.guilds.cache.get(guildID).members.fetch();
-    // console.log(members);
+
+    // all role IDs
+    let roles = {
+      L4COMPUTERSCIENCE: '1036313827983249468',
+      L4CYBERSECURITY: '1036313827983249468',
+      L4SOFTWAREENGINEERING: '1036289578648215654',
+      L5COMPUTERSCIENCE: '1036313889010352170',
+      L5CYBERSECURITY: '1036313889010352170',
+      L5SOFTWAREENGINEERING: '1036289626446516274',
+      L6COMPUTERSCIENCE: '1036313942005399553',
+      L6CYBERSECURITY: '1036313942005399553',
+      L6SOFTWAREENGINEERING: '1036289659501805648',
+    };
 
     members.forEach((member) => {
       try {
         if (member.user.id === message.author.id) {
+          messageArray[0] = messageArray[0].toLowerCase();
+          messageArray[2] = messageArray[2].toLowerCase();
           member
             .setNickname(
-              `${messageArray[0][0].toUpperCase()}${messageArray[0].slice(1)} ${
-                messageArray[1][0]
-              } / ${messageArray[2]}`
+              `${messageArray[0][0].toUpperCase()}${messageArray[0]
+                .slice(1)
+                .toLowerCase()} ${messageArray[1][0].toUpperCase()} / ${
+                messageArray[2]
+              }`
             )
             .catch((e) => console.log(e, 'Error, invalid permissions.'));
+
+          let usersRole = userLevel + userRole;
+          usersRole = usersRole.toUpperCase();
+          console.log(usersRole);
+          member.roles.add(roles[usersRole]);
         }
       } catch (e) {
         console.log(e);
       }
     });
-    message.reply('Successfully identified. Changing your nickname now.');
+    message.reply(
+      'Successfully identified. Changing your nickname & role now.'
+    );
   } else {
     message.reply('Cannot identify you. Invalid information provided.');
   }
