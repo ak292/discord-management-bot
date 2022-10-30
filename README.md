@@ -7,5 +7,6 @@
 
 - Fix issue with duplicate first/last names (FIXED)
 - Fix issue with removing a users old rank when giving them new one
+- Seperate Express and Discord.js code
 - Change the client side from input into drag and drop file for CSV
 - Finish working on the botCSVUpdate discord.js function
