@@ -1,17 +1,23 @@
-const csvButton = document.getElementById('submit-button');
-const input = document.getElementById('input-csv');
+const securityButton = document.querySelector('.security-button');
+const securityParagraph = document.querySelector('.security-paragraph');
+securityParagraph.textContent = 'Security Question Mode: Disabled';
+let enabled = false;
 
-csvButton.addEventListener('click', async function (event) {
-  const csvName = { val: input.value };
-  input.value = '';
+securityButton.addEventListener('click', async () => {
+  let message = await fetch('/security');
+  message = await message.json();
 
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(csvName),
-  };
+  if (enabled) {
+    enabled = false;
+    securityParagraph.classList.remove('security-message-green');
+    securityParagraph.classList.add('security-message-red');
+    securityButton.textContent = 'Enable';
+  } else {
+    enabled = true;
+    securityParagraph.classList.remove('security-message-red');
+    securityParagraph.classList.add('security-message-green');
+    securityButton.textContent = 'Disable';
+  }
 
-  await fetch('/csv', options);
+  securityParagraph.textContent = message.msg;
 });

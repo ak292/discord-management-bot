@@ -5,8 +5,44 @@
     <script src="index.js" async></script>
   </head>
   <body>
-    <label>Type your CSV file name below:</label>
-    <input id="input-csv" />
-    <button id="submit-button">Submit</button>
+    <div class="intro-flex">
+      <h1>Welcome to your Discord Management Bot Dashboard!</h1>
+      <h2>Below are some configuration options for your Discord Bot</h2>
+    </div>
+    <div class="security-flex">
+      <p class="security-paragraph">Security Question Mode: Disabled</p>
+      <button class="security-button">Enable</button>
+      <div class="help-tip">
+        <p>
+          Enabling this option will make the bot ask users a security question
+          to confirm their identity upon them joining the Discord server. The
+          security question could be something like "What is your middle name?"
+        </p>
+      </div>
+    </div>
+
+    <h3 class="h3-progress">
+      Want to update the students roles based on progress decisions?
+    </h3>
+    <section class="drop-area">
+      <i></i>
+      <p>Drop your CSV file here!</p>
+      <div class="p-flex">
+        <p>
+          <small
+            >CSV file has to follow a certain structure for the code to
+            work.</small
+          >
+        </p>
+        <div class="help-tip">
+          <p>
+            It is assumed that the first and second columns of the CSV file will
+            contain the students UP numbers and the students progress decisions
+            respectively. I did not have access to the real UoP CSV file so
+            assumptions had to be made for this project.
+          </p>
+        </div>
+      </div>
+    </section>
   </body>
 </html>
