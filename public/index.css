@@ -176,8 +176,21 @@ button:active {
 }
 /******************* CAREFUL OF THIS CSS, COPY PASTED ****************/
 
-.h3-progress {
+.h3-upload {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   z-index: -1;
+}
+
+.green-message {
+  color: green;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.red-message {
+  color: red;
+  font-weight: bold;
+  font-size: 18px;
 }

@@ -5,7 +5,7 @@
 
 # To-Do-List
 
-- Fix issue with duplicate first/last names (FIXED)
-- Fix issue with removing a users old rank when giving them new one
-- Change the client side from input into drag and drop file for CSV
-- Finish working on the botCSVUpdate discord.js function
+- Fix issue with duplicate first/last names (DONE)
+- Change the client side from input into drag and drop file for CSV (DONE)
+- Finish working on the botCSVUpdate discord.js function to update roles
+  - Make sure to remove a users old rank when giving them new one

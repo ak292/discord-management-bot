@@ -11,6 +11,8 @@ const guildID = '1034878587129569401';
 // results array from CSV file
 const results = [];
 
+// global variables required so I can make
+// use of them in mutliple functions below
 let middleName = '';
 let securityQuestion = false;
 let studentNumber = '';
@@ -72,6 +74,7 @@ export function botListeningEvents() {
       return;
     }
 
+    // seperate event listener for the security question mode
     if (message.content.startsWith('!')) {
       middleName = message.content.split('').slice(1).join('').toUpperCase();
 
@@ -88,9 +91,7 @@ export function botListeningEvents() {
       }
 
       if (!securityMatchFound) {
-        return message.reply(
-          'Incorrect answer. Please leave & rejoin the Discord server to try again.'
-        );
+        return message.reply('Incorrect answer. Please try again.');
       } else {
         message.reply('Correct answer! Changing your nickname and role now.');
 
@@ -150,7 +151,7 @@ export function botListeningEvents() {
     if (matchFound === 5) {
       if (securityQuestion) {
         return await message.reply(
-          'For security purposes, please answer: What is your middle name? Type your answer with an exclamation mark beforehand. For example: !Michael'
+          'For security purposes, please answer: What is your middle name? Type your answer with an exclamation mark followed by your middle name. For example: !Michael'
         );
       }
 
