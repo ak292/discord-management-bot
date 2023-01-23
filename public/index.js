@@ -9,7 +9,6 @@ const uploadMessage = document.querySelector('.upload-message');
 async function initializeStatus() {
   let lastKnownStatus = await fetch('/lastStatus');
   lastKnownStatus = await lastKnownStatus.text();
-  console.log('last is', typeof lastKnownStatus);
 
   if (lastKnownStatus.length === 0 || lastKnownStatus === 'false') {
     helperFunctionColor('green', 'red', 'Enable');
@@ -59,7 +58,7 @@ function timeoutAndColor(colorToAdd, colorToRemove, message) {
   }, 5000);
 }
 
-// client side code for the CSV drag and drop *COPY PASTED CODE, REWORD*
+// client side code for the CSV drag and drop
 const dropArea = document.querySelector('.drop-area');
 
 const dragActive = () => dropArea.classList.add('green-border');

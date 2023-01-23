@@ -143,6 +143,7 @@ button:active {
     opacity: 100%;
   }
 }
+/******************* CAREFUL OF THIS CSS, COPY PASTED ****************/
 
 .drop-area {
   margin: 1rem auto;
@@ -174,7 +175,6 @@ button:active {
 .green-border {
   border-color: green;
 }
-/******************* CAREFUL OF THIS CSS, COPY PASTED ****************/
 
 .h3-upload {
   display: flex;
