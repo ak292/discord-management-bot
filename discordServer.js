@@ -21,6 +21,35 @@ let matchFound = 0;
 let messageArray = '';
 let messageAuthor = '';
 
+let lastKnownSecurityStatus = '';
+
+// all role IDs
+let roles = {
+  L4COMPUTERSCIENCE: '1036313827983249468',
+  L4CYBERSECURITY: '1036313827983249468',
+  L4SOFTWAREENGINEERING: '1036289578648215654',
+  L5COMPUTERSCIENCE: '1036313889010352170',
+  L5CYBERSECURITY: '1036313889010352170',
+  L5SOFTWAREENGINEERING: '1036289626446516274',
+  L6COMPUTERSCIENCE: '1036313942005399553',
+  L6CYBERSECURITY: '1036313942005399553',
+  L6SOFTWAREENGINEERING: '1036289659501805648',
+  ALUMNI: '1066931568112848990',
+};
+
+// role progression object (match L4 to L5, L5 to L6, and L6 to Alumni)
+let progressionRoles = {
+  L4COMPUTERSCIENCE: '1036313889010352170',
+  L4CYBERSECURITY: '1036313889010352170',
+  L4SOFTWAREENGINEERING: '1036289626446516274',
+  L5COMPUTERSCIENCE: '1036313942005399553',
+  L5CYBERSECURITY: '1036313942005399553',
+  L5SOFTWAREENGINEERING: '1036289659501805648',
+  L6COMPUTERSCIENCE: '1066931568112848990',
+  L6CYBERSECURITY: '1066931568112848990',
+  L6SOFTWAREENGINEERING: '1066931568112848990',
+};
+
 // discord.js configuration
 const client = new Client({
   partials: [Partials.Channel],
@@ -176,6 +205,20 @@ export function securityMode() {
   }
 }
 
+export function getLastKnownStatus() {
+  return lastKnownSecurityStatus;
+}
+
+export function toggleLastKnownStatus() {
+  if (!lastKnownSecurityStatus || lastKnownSecurityStatus === '') {
+    lastKnownSecurityStatus = true;
+    return 'Last Known Status: Enabled.';
+  } else {
+    lastKnownSecurityStatus = false;
+    return 'Last Known Status: Disabled.';
+  }
+}
+
 // reusable function for changing users role and nickname
 // once they have been verified
 async function nameAndRoleChanger() {
@@ -184,19 +227,6 @@ async function nameAndRoleChanger() {
 
   // grab all members from server to find match
   const members = await client.guilds.cache.get(guildID).members.fetch();
-
-  // all role IDs
-  let roles = {
-    L4COMPUTERSCIENCE: '1036313827983249468',
-    L4CYBERSECURITY: '1036313827983249468',
-    L4SOFTWAREENGINEERING: '1036289578648215654',
-    L5COMPUTERSCIENCE: '1036313889010352170',
-    L5CYBERSECURITY: '1036313889010352170',
-    L5SOFTWAREENGINEERING: '1036289626446516274',
-    L6COMPUTERSCIENCE: '1036313942005399553',
-    L6CYBERSECURITY: '1036313942005399553',
-    L6SOFTWAREENGINEERING: '1036289659501805648',
-  };
 
   members.forEach((member) => {
     try {
@@ -216,6 +246,98 @@ async function nameAndRoleChanger() {
         let usersRole = userLevel + userRole;
         usersRole = usersRole.toUpperCase();
         member.roles.add(roles[usersRole]);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  });
+}
+
+function helperRoleUpdate(memberToEdit, roleRemoveId, roleAddId) {
+  memberToEdit.roles.remove(roleRemoveId);
+  memberToEdit.roles.add(roleAddId);
+}
+
+export async function botCSVUpdater(path) {
+  let results = [];
+
+  // load in updated CSV file
+  fs.createReadStream(`${path}`)
+    .pipe(csv(['StudentNumber', 'ProgressDecision']))
+    .on('data', (data) => results.push(data))
+    .on('end', () => {
+      console.log('Successfully loaded in Progress Decision CSV file.'.green);
+    });
+
+  // grab all members from server to find match
+  const members = await client.guilds.cache.get(guildID).members.fetch();
+
+  members.forEach((member) => {
+    try {
+      for (let i = 0; i < results.length; i++) {
+        const nickName = `${member.nickname.toUpperCase()}`;
+
+        if (
+          nickName.includes(Object.values(results[i])[0]) &&
+          Object.values(results[i])[1] === 'PROGRESS'
+        ) {
+          member.roles.cache.map((role) => {
+            switch (role.id) {
+              case roles['L4COMPUTERSCIENCE']:
+                helperRoleUpdate(
+                  member,
+                  roles['L4COMPUTERSCIENCE'],
+                  roles['L5COMPUTERSCIENCE']
+                );
+                break;
+              case roles['L4CYBERSECURITY']:
+                helperRoleUpdate(
+                  member,
+                  roles['L4CYBERSECURITY'],
+                  roles['L5CYBERSECURITY']
+                );
+                break;
+              case roles['L4SOFTWAREENGINEERING']:
+                helperRoleUpdate(
+                  member,
+                  roles['L4SOFTWAREENGINEERING'],
+                  roles['L5SOFTWAREENGINEERING']
+                );
+                break;
+              case roles['L5COMPUTERSCIENCE']:
+                helperRoleUpdate(
+                  member,
+                  roles['L5COMPUTERSCIENCE'],
+                  roles['L6COMPUTERSCIENCE']
+                );
+                break;
+              case roles['L5CYBERSECURITY']:
+                helperRoleUpdate(
+                  member,
+                  roles['L5CYBERSECURITY'],
+                  roles['L6CYBERSECURITY']
+                );
+                break;
+              case roles['L5SOFTWAREENGINEERING']:
+                helperRoleUpdate(
+                  member,
+                  roles['L5SOFTWAREENGINEERING'],
+                  roles['L6SOFTWAREENGINEERING']
+                );
+                break;
+              case roles['L6COMPUTERSCIENCE']:
+              case roles['L6CYBERSECURITY']:
+              case roles['L6SOFTWAREENGINEERING']:
+                member.roles.remove(roles['L6COMPUTERSCIENCE']);
+                member.roles.remove(roles['L6CYBERSECURITY']);
+                member.roles.remove(roles['L6SOFTWAREENGINEERING']);
+                member.roles.add(roles['ALUMNI']);
+                break;
+              default:
+                break;
+            }
+          });
+        }
       }
     } catch (e) {
       console.log(e);

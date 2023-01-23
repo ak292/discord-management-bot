@@ -7,5 +7,10 @@
 
 - Fix issue with duplicate first/last names (DONE)
 - Change the client side from input into drag and drop file for CSV (DONE)
-- Finish working on the botCSVUpdate discord.js function to update roles
-  - Make sure to remove a users old rank when giving them new one
+- Finish working on the botCSVUpdate discord.js function to update roles (DONE)
+
+  - Make sure to remove a users old rank when giving them new one (DONE)
+
+- Additional functionality yet to be added (need more data to do it). For example:
+  - If student withdraws, or changes course, etc. etc.
+  - Students optional Modules

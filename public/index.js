@@ -2,27 +2,52 @@
 const securityButton = document.querySelector('.security-button');
 const securityParagraph = document.querySelector('.security-paragraph');
 const uploadMessage = document.querySelector('.upload-message');
-securityParagraph.textContent = 'Security Question Mode: Disabled';
-let enabled = false;
+
+// when DOMContentLoaded, fetch from server last known status of security mode
+// to properly display on client even when page refeshes
+// this makes sure client and server side code is always in sync
+async function initializeStatus() {
+  let lastKnownStatus = await fetch('/lastStatus');
+  lastKnownStatus = await lastKnownStatus.text();
+  console.log('last is', typeof lastKnownStatus);
+
+  if (lastKnownStatus.length === 0 || lastKnownStatus === 'false') {
+    helperFunctionColor('green', 'red', 'Enable');
+    securityParagraph.textContent = 'Security mode has been turned off.';
+  } else {
+    helperFunctionColor('red', 'green', 'Disable');
+    securityParagraph.textContent = 'Security mode has been turned on.';
+  }
+}
+
+// run function everytime page loads (so if user refreshes page)
+document.addEventListener('DOMContentLoaded', initializeStatus);
 
 securityButton.addEventListener('click', async () => {
   let message = await fetch('/security');
   message = await message.json();
 
-  if (enabled) {
-    enabled = false;
-    securityParagraph.classList.remove('security-message-green');
-    securityParagraph.classList.add('security-message-red');
-    securityButton.textContent = 'Enable';
+  if (message.msg === 'Security mode has been turned off.') {
+    helperFunctionColor('green', 'red', 'Enable');
   } else {
-    enabled = true;
-    securityParagraph.classList.remove('security-message-red');
-    securityParagraph.classList.add('security-message-green');
-    securityButton.textContent = 'Disable';
+    helperFunctionColor('red', 'green', 'Disable');
   }
 
   securityParagraph.textContent = message.msg;
+
+  const options = {
+    method: 'PATCH',
+  };
+
+  // update last known status
+  await fetch('/lastStatus', options);
 });
+
+function helperFunctionColor(colorToRemove, colorToAdd, toggle) {
+  securityParagraph.classList.remove(`security-message-${colorToRemove}`);
+  securityParagraph.classList.add(`security-message-${colorToAdd}`);
+  securityButton.textContent = `${toggle}`;
+}
 
 // timeout & color setter function
 function timeoutAndColor(colorToAdd, colorToRemove, message) {

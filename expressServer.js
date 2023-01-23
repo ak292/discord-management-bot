@@ -2,7 +2,13 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import { dirname } from 'path';
 import express from 'express';
-import { botListeningEvents, securityMode } from './discordServer.js';
+import {
+  botListeningEvents,
+  securityMode,
+  botCSVUpdater,
+  getLastKnownStatus,
+  toggleLastKnownStatus,
+} from './discordServer.js';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 require('colors');
@@ -26,28 +32,34 @@ app.get('/security', (req, res) => {
   res.send(securityMode());
 });
 
-// only one file will be sent
+app.get('/lastStatus', (req, res) => {
+  res.send(getLastKnownStatus());
+});
+
+app.patch('/lastStatus', (req, res) => {
+  res.send(toggleLastKnownStatus());
+});
+
 app.post('/csvFile', (req, res) => {
-  fs.writeFile(
-    `./csvFiles/csvFile--${Date.now()}.csv`,
-    req.body,
-    function (err) {
-      if (err) {
-        console.log(err);
-        return res
-          .status(400)
-          .send(
-            'Error with your file upload. Please make sure it is a valid CSV file.'
-          );
-      }
-      console.log('The file was saved!');
+  const currentTime = Date.now();
+  const path = `./csvFiles/csvFile--${currentTime}.csv`;
+  fs.writeFile(path, req.body, function (err) {
+    if (err) {
+      console.log(err);
       return res
-        .status(200)
+        .status(400)
         .send(
-          'Your CSV was successfully uploaded. Please allow the Discord bot a few seconds to complete all required changes.'
+          'Error with your file upload. Please make sure it is a valid CSV file.'
         );
     }
-  );
+    console.log('The CSV file was successfully saved!');
+    botCSVUpdater(path);
+    return res
+      .status(200)
+      .send(
+        'Your CSV was successfully uploaded. Please allow the Discord bot a few seconds to complete all required changes.'
+      );
+  });
 });
 
 app.listen('3000', () => {
