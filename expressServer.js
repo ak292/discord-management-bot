@@ -57,7 +57,7 @@ app.post('/csvFile', (req, res) => {
     return res
       .status(200)
       .send(
-        'Your CSV was successfully uploaded. Please allow the Discord bot a few seconds to complete all required changes.'
+        'Your CSV file was successfully uploaded. Please allow the Discord bot a few seconds to complete all required role changes.'
       );
   });
 });

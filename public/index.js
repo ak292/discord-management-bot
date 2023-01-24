@@ -80,12 +80,14 @@ dragLeaveDrop.forEach((eventName) => {
   dropArea.addEventListener(eventName, dragInactive);
 });
 
+// send dropped csv file from client to server
+// using the FileReader() and reader.onload functions
 dropArea.addEventListener('drop', async (e) => {
   const dataTransfer = e.dataTransfer;
   let files = dataTransfer.files;
   if (files.length > 1) {
     const message =
-      'Error with your upload! Please only upload one CSV file at a time.';
+      'Error with your upload! Please upload no more than one CSV file at a time.';
     timeoutAndColor('red', 'green', message);
     return;
   }

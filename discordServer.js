@@ -327,7 +327,7 @@ export async function botCSVUpdater(path) {
         }
       }
     } catch (e) {
-      console.log(e);
+      console.log(`Error! ${member.user.username} does not have a nickname.`);
     }
   });
 }
