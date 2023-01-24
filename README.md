@@ -1,6 +1,6 @@
-# ak-management-bot
+# Discord-Management-Bot
 
-- This is an engineering project that I will submit as my final year graduation project as a Computer Science student at the University of Portsmouth.
+- This is an engineering project that I will submit as part of my final year graduation project as a Computer Science student at the University of Portsmouth.
 - README to be updated.
 
 # To-Do-List
