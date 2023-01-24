@@ -40,6 +40,13 @@ button:active {
   justify-content: center;
   align-items: center;
   gap: 10px;
+  margin-bottom: 25px;
+}
+
+.upload-message,
+.upload-message-two {
+  max-width: 400px;
+  text-align: center;
 }
 
 .security-paragraph {
@@ -68,6 +75,7 @@ button:active {
   font-size: 14px;
   line-height: 26px;
   cursor: default;
+  z-index: 1;
 }
 
 .help-tip:before {
@@ -79,7 +87,6 @@ button:active {
 .help-tip:hover p {
   display: block;
   transform-origin: 100% 0%;
-
   -webkit-animation: fadeIn 0.3s ease-in-out;
   animation: fadeIn 0.3s ease-in-out;
 }
@@ -146,7 +153,7 @@ button:active {
 /******************* CAREFUL OF THIS CSS, COPY PASTED ****************/
 
 .drop-area {
-  margin: 1rem auto;
+  /* margin: 1rem auto; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -176,11 +183,11 @@ button:active {
   border-color: green;
 }
 
-.h3-upload {
+.h3-progress {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  z-index: -1;
+  max-width: 400px;
+  text-align: center;
 }
 
 .green-message {
@@ -193,4 +200,10 @@ button:active {
   color: red;
   font-weight: bold;
   font-size: 18px;
+}
+
+.two-drag-drops {
+  display: flex;
+  justify-content: center;
+  gap: 100px;
 }

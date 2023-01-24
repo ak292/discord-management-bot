@@ -9,7 +9,10 @@ require('colors');
 // guildID is the server ID (change as you wish)
 const guildID = '1034878587129569401';
 // results array from CSV file
-const results = [];
+let results = [];
+
+// results array from progress decision csv file
+let progressResults = [];
 
 // global variables required so I can make
 // use of them in mutliple functions below
@@ -23,7 +26,8 @@ let messageAuthor = '';
 
 let lastKnownSecurityStatus = '';
 
-// all role IDs
+// all role IDs. Non-SE roles (cyber/comp sci)
+// have been matched to same role ID (both NON-SE ROLE)
 let roles = {
   L4COMPUTERSCIENCE: '1036313827983249468',
   L4CYBERSECURITY: '1036313827983249468',
@@ -50,29 +54,40 @@ const client = new Client({
   ],
 });
 
-export function botListeningEvents() {
-  client.on('ready', async () => {
-    console.log(`Bot successfully connected at ${client.user.tag}`.green);
+export function clearOutResults() {
+  results = [];
+}
 
-    // load in CSV file
-    fs.createReadStream('dummydata.csv')
-      .pipe(
-        csv([
-          'FirstName',
-          'LastName',
-          'StudentNumber',
-          'Level',
-          'CourseName',
-          'MiddleName',
-        ])
-      )
-      .on('data', (data) => results.push(data))
-      .on('end', () => {
-        console.log('Successfully loaded in CSV file.'.green);
-      });
+export function clearOutProgressResults() {
+  progressResults = [];
+}
+
+export function initialCSVLoader(csvPath) {
+  // load in CSV file
+  fs.createReadStream(`${csvPath}`)
+    .pipe(
+      csv([
+        'FirstName',
+        'LastName',
+        'StudentNumber',
+        'Level',
+        'CourseName',
+        'MiddleName',
+      ])
+    )
+    .on('data', (data) => results.push(data))
+    .on('end', () => {
+      console.log('Successfully loaded in CSV file.'.green);
+    });
+}
+
+export function botListeningEvents(initialValue) {
+  client.on('ready', () => {
+    console.log(`Bot successfully connected at ${client.user.tag}`.green);
   });
 
   client.on('guildMemberAdd', (member) => {
+    if (!initialValue) return;
     member.send(
       `Welcome to the server ${member.user.username}. If you wish to gain full access to the server, please type your first name, surname, student number, level (L4/L5/L6), and course in one message seperated by spaces.`
     );
@@ -80,6 +95,7 @@ export function botListeningEvents() {
   });
 
   client.on('messageCreate', async (message) => {
+    if (!initialValue) return;
     // line below so bot doesn't detect its own messages
     if (message.author.bot === true) {
       return;
@@ -246,12 +262,10 @@ function helperRoleUpdate(memberToEdit, roleRemoveId, roleAddId) {
 }
 
 export async function botCSVUpdater(path) {
-  let results = [];
-
   // load in updated CSV file
   fs.createReadStream(`${path}`)
     .pipe(csv(['StudentNumber', 'ProgressDecision']))
-    .on('data', (data) => results.push(data))
+    .on('data', (data) => progressResults.push(data))
     .on('end', () => {
       console.log('Successfully loaded in Progress Decision CSV file.'.green);
     });
@@ -261,12 +275,12 @@ export async function botCSVUpdater(path) {
 
   members.forEach((member) => {
     try {
-      for (let i = 0; i < results.length; i++) {
+      for (let i = 0; i < progressResults.length; i++) {
         const nickName = `${member.nickname.toUpperCase()}`;
 
         if (
-          nickName.includes(Object.values(results[i])[0]) &&
-          Object.values(results[i])[1] === 'PROGRESS'
+          nickName.includes(Object.values(progressResults[i])[0]) &&
+          Object.values(progressResults[i])[1] === 'PROGRESS'
         ) {
           member.roles.cache.map((role) => {
             switch (role.id) {

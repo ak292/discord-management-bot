@@ -8,6 +8,9 @@ import {
   botCSVUpdater,
   getLastKnownStatus,
   toggleLastKnownStatus,
+  initialCSVLoader,
+  clearOutResults,
+  clearOutProgressResults,
 } from './discordServer.js';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
@@ -40,10 +43,34 @@ app.patch('/lastStatus', (req, res) => {
   res.send(toggleLastKnownStatus());
 });
 
-app.post('/csvFile', (req, res) => {
+let initialCSV = false;
+
+app.post('/initialCSV', async (req, res) => {
+  if (initialCSV === false) {
+    initialCSV = true;
+  } else {
+    // delete all csv files in folder and clear out
+    // corresponding results array in discordServer.js
+    // since new CSV file is being uploaded
+    clearOutResults();
+
+    // clear out initialCSV folder before new CSV
+    // file is uploaded
+    const directory = './initialCSV';
+    fs.readdir(directory, (err, files) => {
+      if (err) throw err;
+
+      for (const file of files) {
+        fs.unlink(path.join(directory, file), (err) => {
+          if (err) throw err;
+        });
+      }
+    });
+  }
+
   const currentTime = Date.now();
-  const path = `./csvFiles/csvFile--${currentTime}.csv`;
-  fs.writeFile(path, req.body, function (err) {
+  const pathToFile = `./initialCSV/csvFile--${currentTime}.csv`;
+  await fs.promises.writeFile(pathToFile, req.body, function (err) {
     if (err) {
       console.log(err);
       return res
@@ -53,7 +80,56 @@ app.post('/csvFile', (req, res) => {
         );
     }
     console.log('The CSV file was successfully saved!');
-    botCSVUpdater(path);
+  });
+
+  botListeningEvents(initialCSV);
+  initialCSVLoader(pathToFile);
+
+  return res
+    .status(200)
+    .send(
+      'Your CSV file was successfully uploaded. The Discord Bot will now use the information provided to verify new users who join the server.'
+    );
+});
+
+let progressCSV = false;
+
+app.post('/csvFile', (req, res) => {
+  if (progressCSV === false) {
+    progressCSV = true;
+  } else {
+    // delete all csv files in folder and clear out
+    // corresponding results array in discordServer.js
+    // since new CSV file is being uploaded
+    clearOutProgressResults();
+
+    // clear out initialCSV folder before new CSV
+    // file is uploaded
+    const directory = './progressCSV';
+    fs.readdir(directory, (err, files) => {
+      if (err) throw err;
+
+      for (const file of files) {
+        fs.unlink(path.join(directory, file), (err) => {
+          if (err) throw err;
+        });
+      }
+    });
+  }
+
+  const currentTime = Date.now();
+  const pathToFile = `./progressCSV/csvFile--${currentTime}.csv`;
+  fs.writeFile(pathToFile, req.body, function (err) {
+    if (err) {
+      console.log(err);
+      return res
+        .status(400)
+        .send(
+          'Error with your file upload. Please make sure it is a valid CSV file.'
+        );
+    }
+    console.log('The CSV file was successfully saved!');
+    botCSVUpdater(pathToFile);
     return res
       .status(200)
       .send(
@@ -64,5 +140,5 @@ app.post('/csvFile', (req, res) => {
 
 app.listen('3000', () => {
   console.log('Server is up on port 3000.'.green);
-  botListeningEvents();
+  botListeningEvents(initialCSV);
 });

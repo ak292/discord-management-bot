@@ -11,6 +11,8 @@
 
   - Make sure to remove a users old rank when giving them new one (DONE)
 
+- Delete old CSV files when new one is uploaded (DONE)
+
 - Additional functionality yet to be added (need more data to do it). For example:
   - If student withdraws, or changes course, etc.
   - Students optional Modules

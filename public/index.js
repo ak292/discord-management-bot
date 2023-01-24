@@ -2,6 +2,7 @@
 const securityButton = document.querySelector('.security-button');
 const securityParagraph = document.querySelector('.security-paragraph');
 const uploadMessage = document.querySelector('.upload-message');
+const uploadMessageTwo = document.querySelector('.upload-message-two');
 
 // when DOMContentLoaded, fetch from server last known status of security mode
 // to properly display on client even when page refeshes
@@ -49,46 +50,64 @@ function helperFunctionColor(colorToRemove, colorToAdd, toggle) {
 }
 
 // timeout & color setter function
-function timeoutAndColor(colorToAdd, colorToRemove, message) {
-  uploadMessage.classList.remove(`${colorToRemove}-message`);
-  uploadMessage.classList.add(`${colorToAdd}-message`);
-  uploadMessage.textContent = message;
+function timeoutAndColor(colorToAdd, colorToRemove, message, element) {
+  element.classList.remove(`${colorToRemove}-message`);
+  element.classList.add(`${colorToAdd}-message`);
+  element.textContent = message;
   setTimeout(() => {
-    uploadMessage.textContent = '';
+    element.textContent = '';
   }, 5000);
 }
 
-// client side code for the CSV drag and drop
-const dropArea = document.querySelector('.drop-area');
+// client side code for the CSV drag and drops
+const progressDropArea = document.getElementById('drop-area-one');
+const initialFileDropArea = document.getElementById('drop-area-two');
 
-const dragActive = () => dropArea.classList.add('green-border');
-const dragInactive = () => dropArea.classList.remove('green-border');
+const dragActive = () => {
+  progressDropArea.classList.add('green-border');
+};
+
+const dragActiveTwo = () => {
+  initialFileDropArea.classList.add('green-border');
+};
+
+const dragInactive = () => {
+  progressDropArea.classList.remove('green-border');
+};
+
+const dragInactiveTwo = () => {
+  initialFileDropArea.classList.remove('green-border');
+};
+
 const preventDefault = (e) => e.preventDefault();
 
 const allEvents = ['drop', 'dragleave', 'dragover', 'dragcenter'];
 allEvents.forEach((eventName) => {
-  dropArea.addEventListener(eventName, preventDefault);
+  progressDropArea.addEventListener(eventName, preventDefault);
+  initialFileDropArea.addEventListener(eventName, preventDefault);
 });
 
 const dragOverEnter = ['dragenter', 'dragover'];
 dragOverEnter.forEach((eventName) => {
-  dropArea.addEventListener(eventName, dragActive);
+  progressDropArea.addEventListener(eventName, dragActive);
+  initialFileDropArea.addEventListener(eventName, dragActiveTwo);
 });
 
 const dragLeaveDrop = ['dragleave', 'drop'];
 dragLeaveDrop.forEach((eventName) => {
-  dropArea.addEventListener(eventName, dragInactive);
+  progressDropArea.addEventListener(eventName, dragInactive);
+  initialFileDropArea.addEventListener(eventName, dragInactiveTwo);
 });
 
 // send dropped csv file from client to server
 // using the FileReader() and reader.onload functions
-dropArea.addEventListener('drop', async (e) => {
+progressDropArea.addEventListener('drop', async (e) => {
   const dataTransfer = e.dataTransfer;
   let files = dataTransfer.files;
   if (files.length > 1) {
     const message =
       'Error with your upload! Please upload no more than one CSV file at a time.';
-    timeoutAndColor('red', 'green', message);
+    timeoutAndColor('red', 'green', message, uploadMessage);
     return;
   }
 
@@ -97,7 +116,7 @@ dropArea.addEventListener('drop', async (e) => {
   if (files.type !== 'text/csv') {
     const message =
       'Error with your upload! Please make sure it is a valid CSV file.';
-    timeoutAndColor('red', 'green', message);
+    timeoutAndColor('red', 'green', message, uploadMessage);
     return;
   }
 
@@ -120,9 +139,58 @@ dropArea.addEventListener('drop', async (e) => {
     response = await response.text();
 
     if (responseStatus === 200) {
-      timeoutAndColor('green', 'red', response);
+      timeoutAndColor('green', 'red', response, uploadMessage);
     } else {
-      timeoutAndColor('red', 'green', response);
+      timeoutAndColor('red', 'green', response, uploadMessage);
+    }
+  };
+
+  reader.readAsText(files);
+});
+
+// send dropped csv file from client to server
+// using the FileReader() and reader.onload functions
+initialFileDropArea.addEventListener('drop', async (e) => {
+  const dataTransfer = e.dataTransfer;
+  let files = dataTransfer.files;
+  if (files.length > 1) {
+    const message =
+      'Error with your upload! Please upload no more than one CSV file at a time.';
+    timeoutAndColor('red', 'green', message, uploadMessageTwo);
+    return;
+  }
+
+  files = files[0];
+
+  if (files.type !== 'text/csv') {
+    const message =
+      'Error with your upload! Please make sure it is a valid CSV file.';
+    timeoutAndColor('red', 'green', message, uploadMessageTwo);
+    return;
+  }
+
+  let result = '';
+
+  reader = new FileReader();
+  reader.onload = async function (event) {
+    result = await event.target.result;
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      body: result,
+    };
+
+    let response = await fetch('/initialCSV', options);
+    let responseStatus = response.status;
+    response = await response.text();
+
+    if (responseStatus === 200) {
+      timeoutAndColor('green', 'red', response, uploadMessageTwo);
+    } else {
+      timeoutAndColor('red', 'green', response, uploadMessageTwo);
     }
   };
 
