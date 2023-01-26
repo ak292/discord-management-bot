@@ -24,10 +24,22 @@ let matchFound = 0;
 let messageArray = '';
 let messageAuthor = '';
 
+// used in expressServer.js to check if a CSV file
+// has been uploaded or not. if not, dont run bot function yet
+export let initialCSV = false;
+
+// function change exported initialCSV variable, which is to be used
+// in expressServer.js file when user uploads a CSV file
+export function changeInitialCSV() {
+  initialCSV = true;
+}
+
 let lastKnownSecurityStatus = '';
 
 // all role IDs. Non-SE roles (cyber/comp sci)
-// have been matched to same role ID (both NON-SE ROLE)
+// have been matched to same role ID (because both are NON-SE ROLE)
+// change these role IDs as you wish if you want to use discord bot
+// for your own server with your own roles
 let roles = {
   L4COMPUTERSCIENCE: '1036313827983249468',
   L4CYBERSECURITY: '1036313827983249468',
@@ -81,13 +93,13 @@ export function initialCSVLoader(csvPath) {
     });
 }
 
-export function botListeningEvents(initialValue) {
+export function botListeningEvents() {
   client.on('ready', () => {
     console.log(`Bot successfully connected at ${client.user.tag}`.green);
   });
 
   client.on('guildMemberAdd', (member) => {
-    if (!initialValue) return;
+    if (!initialCSV) return;
     member.send(
       `Welcome to the server ${member.user.username}. If you wish to gain full access to the server, please type your first name, surname, student number, level (L4/L5/L6), and course in one message seperated by spaces.`
     );
@@ -95,7 +107,6 @@ export function botListeningEvents(initialValue) {
   });
 
   client.on('messageCreate', async (message) => {
-    if (!initialValue) return;
     // line below so bot doesn't detect its own messages
     if (message.author.bot === true) {
       return;
@@ -105,6 +116,11 @@ export function botListeningEvents(initialValue) {
     if (message.channel.type !== 1) {
       return;
     }
+
+    if (!initialCSV)
+      return message.reply(
+        'No CSV file has been uploaded yet, so the bot cannot verify you. Please try again later.'
+      );
 
     // seperate event listener for the security question mode
     if (message.content.startsWith('!')) {

@@ -11,6 +11,8 @@ import {
   initialCSVLoader,
   clearOutResults,
   clearOutProgressResults,
+  initialCSV,
+  changeInitialCSV,
 } from './discordServer.js';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
@@ -43,11 +45,9 @@ app.patch('/lastStatus', (req, res) => {
   res.send(toggleLastKnownStatus());
 });
 
-let initialCSV = false;
-
 app.post('/initialCSV', async (req, res) => {
   if (initialCSV === false) {
-    initialCSV = true;
+    changeInitialCSV();
   } else {
     // delete all csv files in folder and clear out
     // corresponding results array in discordServer.js
@@ -69,7 +69,7 @@ app.post('/initialCSV', async (req, res) => {
   }
 
   const currentTime = Date.now();
-  const pathToFile = `./initialCSV/csvFile--${currentTime}.csv`;
+  const pathToFile = `./initialCSV/initialCSV--${currentTime}.csv`;
   await fs.promises.writeFile(pathToFile, req.body, function (err) {
     if (err) {
       console.log(err);
@@ -82,7 +82,6 @@ app.post('/initialCSV', async (req, res) => {
     console.log('The CSV file was successfully saved!');
   });
 
-  botListeningEvents(initialCSV);
   initialCSVLoader(pathToFile);
 
   return res
@@ -118,7 +117,7 @@ app.post('/csvFile', (req, res) => {
   }
 
   const currentTime = Date.now();
-  const pathToFile = `./progressCSV/csvFile--${currentTime}.csv`;
+  const pathToFile = `./progressCSV/progressCSV--${currentTime}.csv`;
   fs.writeFile(pathToFile, req.body, function (err) {
     if (err) {
       console.log(err);
@@ -140,5 +139,5 @@ app.post('/csvFile', (req, res) => {
 
 app.listen('3000', () => {
   console.log('Server is up on port 3000.'.green);
-  botListeningEvents(initialCSV);
+  botListeningEvents();
 });
