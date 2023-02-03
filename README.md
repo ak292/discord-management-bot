@@ -16,3 +16,7 @@
 - Additional functionality yet to be added (need more data to do it). For example:
   - If student withdraws, or changes course, etc.
   - Students optional Modules
+
+# Completed tasks
+
+- Test requirements (DONE)
