@@ -47,6 +47,7 @@ app.patch('/lastStatus', (req, res) => {
 
 app.post('/initialCSV', async (req, res) => {
   if (initialCSV === false) {
+    // make initialCSV true
     changeInitialCSV();
   } else {
     // delete all csv files in folder and clear out
