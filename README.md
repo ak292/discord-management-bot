@@ -18,7 +18,7 @@
 - Delete old CSV files when new one is uploaded (DONE)
 - Test requirements (DONE)
 
-# Build
-- Run npm install
-- Run npm start
-- Navigate to localhost:3000 in your browser
+# Usage
+1) Run npm install
+2) Run npm start
+3) Navigate to localhost:3000 in your browser
