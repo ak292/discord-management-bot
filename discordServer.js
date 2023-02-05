@@ -36,19 +36,12 @@ export function changeInitialCSV() {
 
 let lastKnownSecurityStatus = '';
 
-// all role IDs. Non-SE roles (cyber/comp sci)
-// have been matched to same role ID (because both are NON-SE ROLE)
-// change these role IDs as you wish if you want to use discord bot
-// for your own server with your own roles
 let roles = {
-  L4COMPUTERSCIENCE: '1036313827983249468',
-  L4CYBERSECURITY: '1036313827983249468',
+  L4NONSE: '1036313827983249468',
   L4SOFTWAREENGINEERING: '1036289578648215654',
-  L5COMPUTERSCIENCE: '1036313889010352170',
-  L5CYBERSECURITY: '1036313889010352170',
+  L5NONSE: '1036313889010352170',
   L5SOFTWAREENGINEERING: '1036289626446516274',
-  L6COMPUTERSCIENCE: '1036313942005399553',
-  L6CYBERSECURITY: '1036313942005399553',
+  L6NONSE: '1036313942005399553',
   L6SOFTWAREENGINEERING: '1036289659501805648',
   ALUMNI: '1066931568112848990',
 };
@@ -101,9 +94,12 @@ export function botListeningEvents() {
   client.on('guildMemberAdd', (member) => {
     if (!initialCSV) return;
     member.send(
-      `Welcome to the server ${member.user.username}. If you wish to gain full access to the server, please type your first name, surname, student number, level (L4/L5/L6), and course in one message seperated by spaces.`
+      `Welcome to the server ${member.user.username}. If you wish to gain full access to the server, please type your first name, surname, student number, level (L4/L5/L6), and course title in one message seperated by spaces.
+      \nBelow is a proper example of how to verify yourself, and all the course options are also below for your convenience.`
     );
-    member.send(`For example: Josh Smith UP12345 L5 Computer Science`);
+    member.send(
+      `Example: Josh Smith UP12345 L5 Computer Science. \nCourse options: Computer Networks, Computer Science, Information Systems, Computing, Creative Computing, Cyber Security, Data Science, Software Engineering`
+    );
   });
 
   client.on('messageCreate', async (message) => {
@@ -241,8 +237,20 @@ export function toggleLastKnownStatus() {
 // reusable function for changing users role and nickname
 // once they have been verified
 async function nameAndRoleChanger() {
+  let nonEngineeringRoles = [
+    'COMPUTERSCIENCE',
+    'INFORMATIONSYSTEMS',
+    'COMPUTING',
+    'CREATIVECOMPUTING',
+    'CYBERSECURITY',
+    'DATASCIENCE',
+  ];
   let userRole = messageArray[4];
   let userLevel = messageArray[3];
+  userRole = userRole.toUpperCase();
+
+  // all options other than Software Eng = NONSE
+  if (nonEngineeringRoles.includes(userRole)) userRole = 'NONSE';
 
   // grab all members from server to find match
   const members = await client.guilds.cache.get(guildID).members.fetch();
@@ -300,19 +308,8 @@ export async function botCSVUpdater(path) {
         ) {
           member.roles.cache.map((role) => {
             switch (role.id) {
-              case roles['L4COMPUTERSCIENCE']:
-                helperRoleUpdate(
-                  member,
-                  roles['L4COMPUTERSCIENCE'],
-                  roles['L5COMPUTERSCIENCE']
-                );
-                break;
-              case roles['L4CYBERSECURITY']:
-                helperRoleUpdate(
-                  member,
-                  roles['L4CYBERSECURITY'],
-                  roles['L5CYBERSECURITY']
-                );
+              case roles['L4NONSE']:
+                helperRoleUpdate(member, roles['L4NONSE'], roles['L5NONSE']);
                 break;
               case roles['L4SOFTWAREENGINEERING']:
                 helperRoleUpdate(
@@ -321,19 +318,8 @@ export async function botCSVUpdater(path) {
                   roles['L5SOFTWAREENGINEERING']
                 );
                 break;
-              case roles['L5COMPUTERSCIENCE']:
-                helperRoleUpdate(
-                  member,
-                  roles['L5COMPUTERSCIENCE'],
-                  roles['L6COMPUTERSCIENCE']
-                );
-                break;
-              case roles['L5CYBERSECURITY']:
-                helperRoleUpdate(
-                  member,
-                  roles['L5CYBERSECURITY'],
-                  roles['L6CYBERSECURITY']
-                );
+              case roles['L5NONSE']:
+                helperRoleUpdate(member, roles['L5NONSE'], roles['L6NONSE']);
                 break;
               case roles['L5SOFTWAREENGINEERING']:
                 helperRoleUpdate(
@@ -342,11 +328,9 @@ export async function botCSVUpdater(path) {
                   roles['L6SOFTWAREENGINEERING']
                 );
                 break;
-              case roles['L6COMPUTERSCIENCE']:
-              case roles['L6CYBERSECURITY']:
+              case roles['L6NONSE']:
               case roles['L6SOFTWAREENGINEERING']:
-                member.roles.remove(roles['L6COMPUTERSCIENCE']);
-                member.roles.remove(roles['L6CYBERSECURITY']);
+                member.roles.remove(roles['L6NONSE']);
                 member.roles.remove(roles['L6SOFTWAREENGINEERING']);
                 member.roles.add(roles['ALUMNI']);
                 break;
