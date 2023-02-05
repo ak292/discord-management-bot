@@ -18,7 +18,7 @@
 - Delete old CSV files when new one is uploaded (DONE)
 - Test requirements (DONE)
 
-# Usage
+# Install
 1) Run npm install
 2) Run npm start
 3) Navigate to localhost:3000 in your browser
