@@ -5,15 +5,16 @@ import express from 'express';
 import {
   botListeningEvents,
   securityMode,
-  botCSVUpdater,
   getLastKnownStatus,
   toggleLastKnownStatus,
+  botCSVUpdater,
   initialCSVLoader,
   clearOutResults,
   clearOutProgressResults,
   initialCSV,
   changeInitialCSV,
 } from './discordServer.js';
+import { deleteCSVFiles, createCSVFile } from './expressHelpers.js';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 require('colors');
@@ -50,46 +51,20 @@ app.post('/initialCSV', async (req, res) => {
     // make initialCSV true
     changeInitialCSV();
   } else {
-    // delete all csv files in folder and clear out
-    // corresponding results array in discordServer.js
-    // since new CSV file is being uploaded
+    // clear out corresponding results array in
+    // discordServer.js since new CSV file is being uploaded
     clearOutResults();
 
-    // clear out initialCSV folder before new CSV
-    // file is uploaded
+    // delete old CSV files
     const directory = './initialCSV';
-    fs.readdir(directory, (err, files) => {
-      if (err) throw err;
-
-      for (const file of files) {
-        fs.unlink(path.join(directory, file), (err) => {
-          if (err) throw err;
-        });
-      }
-    });
+    deleteCSVFiles(directory);
   }
 
   const currentTime = Date.now();
   const pathToFile = `./initialCSV/initialCSV--${currentTime}.csv`;
-  await fs.promises.writeFile(pathToFile, req.body, function (err) {
-    if (err) {
-      console.log(err);
-      return res
-        .status(400)
-        .send(
-          'Error with your file upload. Please make sure it is a valid CSV file.'
-        );
-    }
-    console.log('The CSV file was successfully saved!');
-  });
-
-  initialCSVLoader(pathToFile);
-
-  return res
-    .status(200)
-    .send(
-      'Your CSV file was successfully uploaded. The Discord Bot will now use the information provided to verify new users who join the server.'
-    );
+  const successMessage =
+    'Your CSV file was successfully uploaded. The Discord Bot will now use the information provided to verify new users who join the server.';
+  createCSVFile(pathToFile, req.body, res, successMessage, initialCSVLoader);
 });
 
 let progressCSV = false;
@@ -98,44 +73,21 @@ app.post('/csvFile', (req, res) => {
   if (progressCSV === false) {
     progressCSV = true;
   } else {
-    // delete all csv files in folder and clear out
-    // corresponding results array in discordServer.js
-    // since new CSV file is being uploaded
+    // clear out corresponding results array in
+    // discordServer.js since new CSV file is being uploaded
     clearOutProgressResults();
 
-    // clear out initialCSV folder before new CSV
-    // file is uploaded
+    // delete old CSV files
     const directory = './progressCSV';
-    fs.readdir(directory, (err, files) => {
-      if (err) throw err;
+    deleteCSVFiles(directory);
 
-      for (const file of files) {
-        fs.unlink(path.join(directory, file), (err) => {
-          if (err) throw err;
-        });
-      }
-    });
+    // create new CSV File and write it to folder path
+    const currentTime = Date.now();
+    const pathToFile = `./progressCSV/progressCSV--${currentTime}.csv`;
+    const successMessage =
+      'Your CSV file was successfully uploaded. Please allow the Discord bot a few seconds to complete all required role changes.';
+    createCSVFile(pathToFile, req.body, res, successMessage, botCSVUpdater);
   }
-
-  const currentTime = Date.now();
-  const pathToFile = `./progressCSV/progressCSV--${currentTime}.csv`;
-  fs.writeFile(pathToFile, req.body, function (err) {
-    if (err) {
-      console.log(err);
-      return res
-        .status(400)
-        .send(
-          'Error with your file upload. Please make sure it is a valid CSV file.'
-        );
-    }
-    console.log('The CSV file was successfully saved!');
-    botCSVUpdater(pathToFile);
-    return res
-      .status(200)
-      .send(
-        'Your CSV file was successfully uploaded. Please allow the Discord bot a few seconds to complete all required role changes.'
-      );
-  });
 });
 
 app.listen('3000', () => {
