@@ -334,7 +334,15 @@ export async function botCSVUpdater(path) {
                 member.roles.remove(roles['L6SOFTWAREENGINEERING']);
                 member.roles.add(roles['ALUMNI']);
                 break;
+              // this case below is just the "EVERYONE" role id assigned to ALL members
+              // in the discord server by default, it does not count as a real role and
+              // it has nothing to do with any of roles in the discord server
+              case '1034878587129569401':
+                break;
               default:
+                console.log(
+                  `${member.user.username} is either unverified or is already an alumni.`
+                );
                 break;
             }
           });
