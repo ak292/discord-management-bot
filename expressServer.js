@@ -13,12 +13,12 @@ import {
   clearOutProgressResults,
   initialCSV,
   changeInitialCSV,
+  changeCSVValues,
 } from './discordServer.js';
 import { deleteCSVFiles, createCSVFile } from './expressHelpers.js';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 require('colors');
-const fs = require('fs');
 
 // express configuration
 const app = express();
@@ -44,6 +44,13 @@ app.get('/lastStatus', (req, res) => {
 
 app.patch('/lastStatus', (req, res) => {
   res.send(toggleLastKnownStatus());
+});
+
+app.post('/csvCustomizer', (req, res) => {
+  req.body = req.body.replaceAll(',', '');
+  let arrInputValues = [...req.body];
+  changeCSVValues(arrInputValues);
+  res.status(200).send('Success!');
 });
 
 app.post('/initialCSV', async (req, res) => {

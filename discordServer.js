@@ -16,13 +16,37 @@ let progressResults = [];
 
 // global variables required so I can make
 // use of them in mutliple functions below
-let middleName = '';
+let securityQuestionAnswer = '';
 let securityQuestion = false;
 let studentNumber = '';
 let securityMatchFound = false;
 let matchFound = 0;
 let messageArray = '';
 let messageAuthor = '';
+let sortedMessageArray = [];
+
+// object will be used if user decides to set their own
+// values for their csv file column numbers, otherwise
+// default values will be used. a 0 indicates value not given.
+export const csvValues = {
+  FirstName: 0,
+  LastName: 0,
+  StudentNumber: 0,
+  Level: 0,
+  CourseName: 0,
+  SecurityQuestionAnswer: 0,
+};
+
+// function to change csvValues object to be used in
+// expressServer.js file
+export function changeCSVValues(arrInputValues) {
+  csvValues.FirstName = arrInputValues[0] - 1;
+  csvValues.LastName = arrInputValues[1] - 1;
+  csvValues.StudentNumber = arrInputValues[2] - 1;
+  csvValues.Level = arrInputValues[3] - 1;
+  csvValues.CourseName = arrInputValues[4] - 1;
+  csvValues.SecurityQuestionAnswer = arrInputValues[5] - 1;
+}
 
 // used in expressServer.js to check if a CSV file
 // has been uploaded or not. if not, dont run bot function yet
@@ -70,16 +94,7 @@ export function clearOutProgressResults() {
 export function initialCSVLoader(csvPath) {
   // load in CSV file
   fs.createReadStream(`${csvPath}`)
-    .pipe(
-      csv([
-        'FirstName',
-        'LastName',
-        'StudentNumber',
-        'Level',
-        'CourseName',
-        'MiddleName',
-      ])
-    )
+    .pipe(csv())
     .on('data', (data) => results.push(data))
     .on('end', () => {
       console.log('Successfully loaded in CSV file.'.green);
@@ -120,12 +135,18 @@ export function botListeningEvents() {
 
     // seperate event listener for the security question mode
     if (message.content.startsWith('!')) {
-      middleName = message.content.split('').slice(1).join('').toUpperCase();
+      securityQuestionAnswer = message.content
+        .split('')
+        .slice(1)
+        .join('')
+        .toUpperCase();
 
       for (let i = 0; i < results.length; i++) {
         if (
-          Object.values(results[i])[2] === studentNumber &&
-          Object.values(results[i])[5] === middleName
+          Object.values(results[i])[csvValues.StudentNumber] ===
+            studentNumber &&
+          Object.values(results[i])[csvValues.SecurityQuestionAnswer] ===
+            securityQuestionAnswer
         ) {
           securityMatchFound = true;
           break;
@@ -147,6 +168,12 @@ export function botListeningEvents() {
     messageAuthor = message.author.id;
     messageArray = message.content.split(' ');
 
+    // sortedMessageArray.splice(
+    //   csvValues.SecurityQuestionAnswer,
+    //   0,
+    //   messageArray[5]
+    // );
+
     // if user message is longer than 5 or 6 length, they have
     // incorrectly formatted their message (eg. extra spaces)
     if (messageArray.length !== 5 && messageArray.length !== 6) {
@@ -156,13 +183,22 @@ export function botListeningEvents() {
     }
 
     if (messageArray.length === 5) {
+      // sorting message array based on the csv column number values that the user input
+      // this allows for the csv to be customized by the user and the code still works
+      sortedMessageArray.splice(csvValues.FirstName, 0, messageArray[0]);
+      sortedMessageArray.splice(csvValues.LastName, 0, messageArray[1]);
+      sortedMessageArray.splice(csvValues.StudentNumber, 0, messageArray[2]);
+      sortedMessageArray.splice(csvValues.Level, 0, messageArray[3]);
+      sortedMessageArray.splice(csvValues.CourseName, 0, messageArray[4]);
       // outer for loop is for results object
       // inner for loop is for users message content
       outerloop: for (let i = 0; i < results.length; i++) {
         // reset matchFound for every row
         matchFound = 0;
         for (let j = 0; j < messageArray.length; j++) {
-          if (messageArray[j].toUpperCase() === Object.values(results[i])[j]) {
+          if (
+            sortedMessageArray[j].toUpperCase() === Object.values(results[i])[j]
+          ) {
             matchFound++;
           }
 
@@ -174,11 +210,21 @@ export function botListeningEvents() {
       messageArray = messageArray.slice(0, 4);
       messageArray = [...messageArray, courseName];
 
+      // sorting message array based on the csv column number values that the user input
+      // this allows for the csv to be customized by the user and the code still works
+      sortedMessageArray.splice(csvValues.FirstName, 0, messageArray[0]);
+      sortedMessageArray.splice(csvValues.LastName, 0, messageArray[1]);
+      sortedMessageArray.splice(csvValues.StudentNumber, 0, messageArray[2]);
+      sortedMessageArray.splice(csvValues.Level, 0, messageArray[3]);
+      sortedMessageArray.splice(csvValues.CourseName, 0, messageArray[4]);
+
       outerloop: for (let i = 0; i < results.length; i++) {
         // reset matchFound for every row
         matchFound = 0;
         for (let j = 0; j < messageArray.length; j++) {
-          if (messageArray[j].toUpperCase() === Object.values(results[i])[j]) {
+          if (
+            sortedMessageArray[j].toUpperCase() === Object.values(results[i])[j]
+          ) {
             matchFound++;
           }
           if (matchFound === 5) {
@@ -188,7 +234,7 @@ export function botListeningEvents() {
       }
     }
 
-    studentNumber = messageArray[2];
+    studentNumber = sortedMessageArray[csvValues.StudentNumber];
 
     // total 5 rows should match, so if matchfound = 5
     // all rows matched and student is successfully identified
@@ -245,8 +291,8 @@ async function nameAndRoleChanger() {
     'CYBERSECURITY',
     'DATASCIENCE',
   ];
-  let userRole = messageArray[4];
-  let userLevel = messageArray[3];
+  let userRole = sortedMessageArray[csvValues.CourseName];
+  let userLevel = sortedMessageArray[csvValues.Level];
   userRole = userRole.toUpperCase();
 
   // all options other than Software Eng = NONSE
@@ -258,17 +304,27 @@ async function nameAndRoleChanger() {
   members.forEach((member) => {
     try {
       if (member.user.id === messageAuthor) {
-        messageArray[0] = messageArray[0].toLowerCase();
-        messageArray[2] = messageArray[2].toLowerCase();
+        sortedMessageArray[csvValues.FirstName] =
+          sortedMessageArray[csvValues.FirstName].toLowerCase();
+        sortedMessageArray[csvValues.StudentNumber] =
+          sortedMessageArray[csvValues.StudentNumber].toLowerCase();
         member
           .setNickname(
-            `${messageArray[0][0].toUpperCase()}${messageArray[0]
+            `${sortedMessageArray[
+              csvValues.FirstName
+            ][0].toUpperCase()}${sortedMessageArray[csvValues.FirstName]
               .slice(1)
-              .toLowerCase()} ${messageArray[1][0].toUpperCase()} / ${
-              messageArray[2]
+              .toLowerCase()} ${sortedMessageArray[
+              csvValues.LastName
+            ][0].toUpperCase()} / ${
+              sortedMessageArray[csvValues.StudentNumber]
             }`
           )
-          .catch((e) => console.log(e, 'Error, invalid permissions.'));
+          .catch((e) =>
+            console.log(
+              `Error, bot does not have permission to set ${member.user.username} nickname.`
+            )
+          );
 
         let usersRole = userLevel + userRole;
         usersRole = usersRole.toUpperCase();

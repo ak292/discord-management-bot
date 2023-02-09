@@ -40,7 +40,6 @@ button:active {
   justify-content: center;
   align-items: center;
   gap: 10px;
-  margin-bottom: 25px;
 }
 
 .upload-message,
@@ -206,4 +205,52 @@ button:active {
   display: flex;
   justify-content: center;
   gap: 100px;
+}
+
+.submit-csv {
+  margin-top: 20px;
+}
+
+.csv-config {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.main-container {
+  display: flex;
+  gap: 15px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.container-1-csv,
+.container-2-csv,
+.container-3-csv {
+  display: grid;
+  gap: 5px;
+  justify-items: center;
+}
+
+.options-msg {
+  width: 500px;
+  text-align: center;
+}
+
+input {
+  height: 30px;
+  width: 250px;
+}
+
+.submit-csv-message {
+  display: none;
+}
+
+.hidden-security-div {
+  display: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
 }

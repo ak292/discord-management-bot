@@ -12,7 +12,14 @@
   <body>
     <div class="intro-flex">
       <h1>Welcome to your Discord Management Bot Dashboard!</h1>
-      <h2>Below are some configuration options for your Discord Bot</h2>
+      <h2>
+        Looking to update roles based on progress decisions?
+        <a href="#">Click here!</a>
+      </h2>
+      <h2>
+        Looking to verify new students who join the Discord server using a CSV?
+        See below.
+      </h2>
     </div>
     <div class="security-flex">
       <p class="security-paragraph"></p>
@@ -20,21 +27,50 @@
       <div class="help-tip">
         <p>
           Enabling this option will make the bot ask users a security question
-          to confirm their identity upon them joining the Discord server. The
-          security question could be any uniquely identfying information you
-          have on each student to verify it's them. Make sure to place the
-          answers to the security question you choose in the 6th column of your
-          initial CSV file. By default, the question is set to "What is your
-          middle name?", but this can easily be changed in the code.
+          to confirm their identity upon them joining the Discord server. This
+          is optional, as this security feature may not always be required, and
+          will require you to input a column number containing security question
+          answers in your CSV file.
         </p>
+        <div class="hidden-security-div">
+          <input />
+        </div>
       </div>
+    </div>
+    <div div class="csv-config">
+      <p class="options-msg">
+        Please number each column depending on how YOUR specific CSV file is
+        structured. This will help the bot understand how to parse your CSV
+        file.
+      </p>
+      <p class="submit-csv-message"></p>
+      <div class="main-container">
+        <div class="container-1-csv">
+          <label>First Name Column #:</label>
+          <input type="number" class="input-csv" min="0" />
+          <label>Last Name Column #:</label>
+          <input type="number" class="input-csv" min="0" />
+        </div>
+
+        <div class="container-2-csv">
+          <label>UP Number Column #:</label>
+          <input type="number" class="input-csv" min="0" />
+          <label>Level Column #:</label>
+          <input type="number" class="input-csv" min="0" />
+        </div>
+
+        <div class="container-3-csv">
+          <label>Course Name Column #:</label>
+          <input type="number" class="input-csv" min="0" />
+          <label>Security Question Column #:</label>
+          <input type="number" class="input-csv security-input" min="0" />
+        </div>
+      </div>
+      <button class="submit-csv">Submit</button>
     </div>
     <div class="two-drag-drops">
       <div class="h3-upload">
-        <h4 class="h3-progress">
-          Drag & Drop the initial CSV file containing the students information
-          to verify new students who join the Discord server
-        </h4>
+        <h4 class="h3-progress">Drop your CSV file below.</h4>
         <p class="upload-message-two"></p>
 
         <section class="drop-area" id="drop-area-two">
@@ -42,47 +78,12 @@
           <p>Drop your CSV file here!</p>
           <div class="p-flex">
             <p>
-              <small
-                >CSV file has to follow a certain structure for the code to
-                work.</small
-              >
+              <small>Make sure you configure your CSV file above.</small>
             </p>
             <div class="help-tip">
               <p>
-                It is assumed that the first six columns of the CSV file will
-                contain the students First Name, Last Name, UP Number, Level,
-                Course Name, and Security Question Answer (like Middle Names)
-                respectively. I did not have access to the real UoP CSV file so
-                assumptions had to be made for this project.
-              </p>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <div class="h3-upload">
-        <h4 class="h3-progress">
-          Drag & Drop the CSV file containing the students progress decisions
-          below to update student roles based on their progress decisions
-        </h4>
-        <p class="upload-message"></p>
-
-        <section class="drop-area" id="drop-area-one">
-          <i class="far fa-images"></i>
-          <p>Drop your CSV file here!</p>
-          <div class="p-flex">
-            <p>
-              <small
-                >CSV file has to follow a certain structure for the code to
-                work.</small
-              >
-            </p>
-            <div class="help-tip">
-              <p>
-                It is assumed that the first and second columns of the CSV file
-                will contain the students UP numbers and the students progress
-                decisions respectively. I did not have access to the real UoP
-                CSV file so assumptions had to be made for this project.
+                Configure your CSV file using the options above so the bot can
+                understand how to parse your CSV file!
               </p>
             </div>
           </div>
