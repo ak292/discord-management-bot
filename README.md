@@ -5,6 +5,12 @@
 
 # To-Do-List
 
+- Fix HTML/CSS on both pages
+- Fix security question input (hide/show)
+- Add custom security question functionality
+- Fix the progress decision role updater functionality
+- Add (potentially) abbreviations feature, CS: Computer Science etc.
+
 - Additional functionality yet to be added (need more data to do it). For example:
   - If student withdraws, or changes course, etc.
   - Students optional Modules
