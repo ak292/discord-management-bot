@@ -44,12 +44,25 @@ export const csvValues = {
 // function to change csvValues object to be used in
 // expressServer.js file
 export function changeCSVValues(arrInputValues) {
+  // if the array is of length 6, that means user must have submit
+  // a column number for the security question answer column
+  if (arrInputValues.length === 6) {
+    csvValues.SecurityQuestionAnswer = arrInputValues[5] - 1;
+  }
   csvValues.FirstName = arrInputValues[0] - 1;
   csvValues.LastName = arrInputValues[1] - 1;
   csvValues.StudentNumber = arrInputValues[2] - 1;
   csvValues.Level = arrInputValues[3] - 1;
   csvValues.CourseName = arrInputValues[4] - 1;
-  // csvValues.SecurityQuestionAnswer = arrInputValues[5] - 1;
+}
+
+// security question submit by user to be used in expressServer.js
+export let customSecurityQuestion = '';
+
+// function to allow user to change the security question to whatever they want
+// to be used in expressServer.js
+export function changeCustomSecurityQuestion(inputQuestion) {
+  customSecurityQuestion = inputQuestion;
 }
 
 // used in expressServer.js to check if a CSV file
@@ -101,7 +114,6 @@ export function initialCSVLoader(csvPath) {
     .pipe(csv())
     .on('data', (data) => {
       results.push(data);
-      console.log(results);
     })
     .on('end', () => {
       console.log('Successfully loaded in CSV file.'.green);
@@ -293,7 +305,7 @@ export function botListeningEvents() {
     if (matchFound === 5) {
       if (securityQuestion) {
         return await message.reply(
-          'For security purposes, please answer: What is your middle name? Type your answer with an exclamation mark followed by your middle name. For example: !Michael'
+          `For security purposes, please answer: ${customSecurityQuestion} Type your answer with an exclamation mark followed by your middle name. For example: !Answer`
         );
       }
 

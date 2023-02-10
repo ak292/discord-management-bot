@@ -3,9 +3,15 @@ const securityButton = document.querySelector('.security-button');
 const securityParagraph = document.querySelector('.security-paragraph');
 const uploadMessage = document.querySelector('.upload-message');
 const uploadMessageTwo = document.querySelector('.upload-message-two');
-// const hiddenSecurityDiv = document.querySelector('.hidden-security-div');
 let lastKnownStatus = '';
 let message = '';
+
+// keep track of these values because user is not allowed to
+// turn security mode on unless both values are true
+// user must have submit a column # for security column
+// and user must have submit their custom security question
+let submitSecurityColumn = false;
+let submitSecurityQuestion = false;
 
 // when DOMContentLoaded, fetch from server last known status of security mode
 // to properly display on client even when page refeshes
@@ -18,9 +24,7 @@ async function initializeStatus() {
     helperFunctionColor('green', 'red', 'Enable');
     securityParagraph.textContent = 'Security mode has been turned off.';
   } else {
-    // hiddenSecurityDiv.style.display = 'block';
     helperFunctionColor('red', 'green', 'Disable');
-
     securityParagraph.textContent = 'Security mode has been turned on.';
   }
 }
@@ -28,7 +32,25 @@ async function initializeStatus() {
 // run function everytime page loads (so if user refreshes page)
 document.addEventListener('DOMContentLoaded', initializeStatus);
 
+const securityParaMessage = document.querySelector(
+  '.security-paragraph-message'
+);
 securityButton.addEventListener('click', async () => {
+  if (!submitSecurityColumn || !submitSecurityQuestion) {
+    securityParaMessage.display = 'inline-block';
+    securityParaMessage.style.color = 'red';
+    securityParaMessage.style.fontWeight = 'bold';
+    securityParaMessage.textContent =
+      'Error! You must submit both a column # for the Security Question column & your custom security question to turn security mode on.';
+    setTimeout(() => {
+      securityParaMessage.display = 'none';
+      securityParaMessage.textContent = '';
+      securityParaMessage.style.fontWeight = '';
+      securityParaMessage.style.color = '';
+    }, 5000);
+    return;
+  }
+
   message = await fetch('/security');
   message = await message.json();
 
@@ -65,7 +87,7 @@ function timeoutAndColor(colorToAdd, colorToRemove, message, element) {
 }
 
 // client side code for the CSV drag and drops
-// const progressDropArea = document.getElementById('drop-area-one');
+const progressDropArea = document.getElementById('drop-area-one');
 const initialFileDropArea = document.getElementById('drop-area-two');
 
 const dragActive = () => {
@@ -88,70 +110,70 @@ const preventDefault = (e) => e.preventDefault();
 
 const allEvents = ['drop', 'dragleave', 'dragover', 'dragcenter'];
 allEvents.forEach((eventName) => {
-  // progressDropArea.addEventListener(eventName, preventDefault);
+  progressDropArea.addEventListener(eventName, preventDefault);
   initialFileDropArea.addEventListener(eventName, preventDefault);
 });
 
 const dragOverEnter = ['dragenter', 'dragover'];
 dragOverEnter.forEach((eventName) => {
-  // progressDropArea.addEventListener(eventName, dragActive);
+  progressDropArea.addEventListener(eventName, dragActive);
   initialFileDropArea.addEventListener(eventName, dragActiveTwo);
 });
 
 const dragLeaveDrop = ['dragleave', 'drop'];
 dragLeaveDrop.forEach((eventName) => {
-  // progressDropArea.addEventListener(eventName, dragInactive);
+  progressDropArea.addEventListener(eventName, dragInactive);
   initialFileDropArea.addEventListener(eventName, dragInactiveTwo);
 });
 
 // send dropped csv file from client to server
 // using the FileReader() and reader.onload functions
-// progressDropArea.addEventListener('drop', async (e) => {
-//   const dataTransfer = e.dataTransfer;
-//   let files = dataTransfer.files;
-//   if (files.length > 1) {
-//     const message =
-//       'Error with your upload! Please upload no more than one CSV file at a time.';
-//     timeoutAndColor('red', 'green', message, uploadMessage);
-//     return;
-//   }
+progressDropArea.addEventListener('drop', async (e) => {
+  const dataTransfer = e.dataTransfer;
+  let files = dataTransfer.files;
+  if (files.length > 1) {
+    const message =
+      'Error with your upload! Please upload no more than one CSV file at a time.';
+    timeoutAndColor('red', 'green', message, uploadMessage);
+    return;
+  }
 
-//   files = files[0];
+  files = files[0];
 
-//   if (files.type !== 'text/csv') {
-//     const message =
-//       'Error with your upload! Please make sure it is a valid CSV file.';
-//     timeoutAndColor('red', 'green', message, uploadMessage);
-//     return;
-//   }
+  if (files.type !== 'text/csv') {
+    const message =
+      'Error with your upload! Please make sure it is a valid CSV file.';
+    timeoutAndColor('red', 'green', message, uploadMessage);
+    return;
+  }
 
-//   let result = '';
+  let result = '';
 
-//   reader = new FileReader();
-//   reader.onload = async function (event) {
-//     result = await event.target.result;
+  reader = new FileReader();
+  reader.onload = async function (event) {
+    result = await event.target.result;
 
-//     const options = {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'text/plain',
-//       },
-//       body: result,
-//     };
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      body: result,
+    };
 
-//     let response = await fetch('/csvFile', options);
-//     let responseStatus = response.status;
-//     response = await response.text();
+    let response = await fetch('/csvFile', options);
+    let responseStatus = response.status;
+    response = await response.text();
 
-//     if (responseStatus === 200) {
-//       timeoutAndColor('green', 'red', response, uploadMessage);
-//     } else {
-//       timeoutAndColor('red', 'green', response, uploadMessage);
-//     }
-//   };
+    if (responseStatus === 200) {
+      timeoutAndColor('green', 'red', response, uploadMessage);
+    } else {
+      timeoutAndColor('red', 'green', response, uploadMessage);
+    }
+  };
 
-//   reader.readAsText(files);
-// });
+  reader.readAsText(files);
+});
 
 // send dropped csv file from client to server
 // using the FileReader() and reader.onload functions
@@ -212,6 +234,8 @@ let inputValues = [];
 
 submitCSV.addEventListener('click', async function () {
   csvInputs.forEach((input) => {
+    if (input.value < 0) input.value = 0;
+
     if (input.value.length !== 0) {
       inputValues.push(input.value);
       filledInputs++;
@@ -220,6 +244,8 @@ submitCSV.addEventListener('click', async function () {
     }
   });
 
+  // if security mode already turned on, filledInputs must be 6
+  // ie. user must supply column # for security question column
   if (
     (lastKnownStatus === 'true' ||
       message.msg === 'Security mode has been turned on.') &&
@@ -239,6 +265,10 @@ submitCSV.addEventListener('click', async function () {
       submitCSVMessage.style.display = 'none';
     }, 5000);
     return;
+  }
+
+  if (filledInputs === 6) {
+    submitSecurityColumn = true;
   }
 
   // Either all 6 values are filled, or 5 values are filled and the missing one
@@ -305,7 +335,45 @@ submitCSV.addEventListener('click', async function () {
 // ALL CODE BELOW IS FOR THE SECURITY QUESTION INPUT
 const securityInputButton = document.querySelector('.security-input-button');
 const securityInputValue = document.querySelector('#security-input');
-securityInputButton.addEventListener('click', function () {
-  console.log(securityInputValue);
-  if (securityInputValue.length === 0) console.log('0');
+const securityInputMessage = document.querySelector('.security-input-message');
+securityInputButton.addEventListener('click', async function () {
+  if (securityInputValue.value.length === 0) return;
+  submitSecurityQuestion = true;
+
+  const options = {
+    method: 'POST',
+    body: securityInputValue.value,
+  };
+
+  securityInputValue.value = '';
+
+  let response = await fetch('/securityQuestion', options);
+  response = await response.text();
+  console.log(response);
+
+  if (response === 'Success!') {
+    securityInputMessage.style.display = 'inline-block';
+    securityInputMessage.style.fontWeight = 'bold';
+    securityInputMessage.style.color = 'green';
+    securityInputMessage.textContent =
+      'Success! Your security question has been saved.';
+    setTimeout(() => {
+      securityInputMessage.textContent = '';
+      securityInputMessage.style.color = '';
+      securityInputMessage.style.fontWeight = '';
+      securityInputMessage.style.display = 'none';
+    }, 5000);
+  } else {
+    securityInputMessage.style.display = 'inline-block';
+    securityInputMessage.style.fontWeight = 'bold';
+    securityInputMessage.style.color = 'red';
+    securityInputMessage.textContent =
+      'Error! There was a problem saving your security question. Please try again later.';
+    setTimeout(() => {
+      securityInputMessage.textContent = '';
+      securityInputMessage.style.color = '';
+      securityInputMessage.style.fontWeight = '';
+      securityInputMessage.style.display = 'none';
+    }, 5000);
+  }
 });

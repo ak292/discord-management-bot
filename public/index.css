@@ -272,3 +272,24 @@ input {
 .two-drag-drops {
   margin-top: 50px;
 }
+
+.security-message-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.security-paragraph-message {
+  width: 500px;
+  font-weight: bold;
+}
+
+.security-input-message {
+  font-weight: bold;
+}
+
+.security-input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

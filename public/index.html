@@ -48,28 +48,35 @@
       </div>
       <button class="submit-csv">Submit</button>
     </div>
-    <div class="security-flex">
-      <p class="security-paragraph"></p>
-      <button class="security-button">Enable</button>
-      <div class="help-tip">
-        <p>
-          Enabling this option will make the bot ask users a security question
-          to confirm their identity upon them joining the Discord server. This
-          is optional, as this security feature may not always be required, and
-          will require you to input a column number containing security question
-          answers in your CSV file. You can customize what security question
-          you'd like the bot to ask below.
-        </p>
-        <!-- <div class="hidden-security-div">
-          <input />
-        </div> -->
+
+    <div class="security-message-container">
+      <p class="security-paragraph-message"></p>
+      <div class="security-flex">
+        <p class="security-paragraph"></p>
+        <button class="security-button">Enable</button>
+        <div class="help-tip">
+          <p>
+            Enabling this option will make the bot ask users a security question
+            to confirm their identity upon them joining the Discord server. This
+            is optional, as this security feature may not always be required,
+            and will require you to input a column number containing security
+            question answers in your CSV file. You can customize what security
+            question you'd like the bot to ask below.
+          </p>
+        </div>
       </div>
     </div>
-    <div class="security-input">
-      <label>If applicable, type your security question here.</label>
-      <input id="security-input" />
-      <button class="security-input-button">Submit</button>
+    <div class="security-input-container">
+      <div class="security-input-1">
+        <p class="security-input-message"></p>
+      </div>
+      <div class="security-input-2">
+        <label>If applicable, type your security question here.</label>
+        <input id="security-input" />
+        <button class="security-input-button">Submit</button>
+      </div>
     </div>
+
     <div class="two-drag-drops">
       <div class="h3-upload">
         <h4 class="h3-progress">
@@ -109,10 +116,10 @@
             </p>
             <div class="help-tip">
               <p>
-                Since the progress decisions CSV file only requires 2 columns
-                (and they are both required), it is assumed that the first and
-                second columns of the CSV file will contain the students UP
-                numbers and the students progress decisions respectively.
+                Since the progress decisions CSV file only requires 2
+                (mandatory) columns, it is assumed that the first two columns of
+                the CSV file will contain the students UP numbers and the
+                students progress decisions respectively.
               </p>
             </div>
           </div>

@@ -14,6 +14,7 @@ import {
   initialCSV,
   changeInitialCSV,
   changeCSVValues,
+  changeCustomSecurityQuestion,
 } from './discordServer.js';
 import { deleteCSVFiles, createCSVFile } from './expressHelpers.js';
 import { createRequire } from 'module';
@@ -49,8 +50,12 @@ app.patch('/lastStatus', (req, res) => {
 app.post('/csvCustomizer', (req, res) => {
   req.body = req.body.replaceAll(',', '');
   let arrInputValues = [...req.body];
-  console.log('from csv', arrInputValues);
   changeCSVValues(arrInputValues);
+  res.status(200).send('Success!');
+});
+
+app.post('/securityQuestion', (req, res) => {
+  changeCustomSecurityQuestion(req.body);
   res.status(200).send('Success!');
 });
 
