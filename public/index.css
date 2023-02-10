@@ -1,8 +1,8 @@
 body {
-  overflow: hidden;
+  /* overflow: hidden;
   position: absolute;
   width: 100%;
-  height: 100%;
+  height: 100%; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -215,6 +215,7 @@ button:active {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 30px;
 }
 
 .main-container {
@@ -236,6 +237,8 @@ button:active {
 .options-msg {
   width: 500px;
   text-align: center;
+  font-weight: bold;
+  font-size: 16px;
 }
 
 input {
@@ -253,4 +256,19 @@ input {
   justify-content: center;
   align-items: center;
   justify-items: center;
+}
+
+.security-input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+#security-input {
+  width: 400px;
+}
+
+.two-drag-drops {
+  margin-top: 50px;
 }

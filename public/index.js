@@ -3,7 +3,7 @@ const securityButton = document.querySelector('.security-button');
 const securityParagraph = document.querySelector('.security-paragraph');
 const uploadMessage = document.querySelector('.upload-message');
 const uploadMessageTwo = document.querySelector('.upload-message-two');
-const hiddenSecurityDiv = document.querySelector('.hidden-security-div');
+// const hiddenSecurityDiv = document.querySelector('.hidden-security-div');
 let lastKnownStatus = '';
 let message = '';
 
@@ -18,7 +18,7 @@ async function initializeStatus() {
     helperFunctionColor('green', 'red', 'Enable');
     securityParagraph.textContent = 'Security mode has been turned off.';
   } else {
-    hiddenSecurityDiv.style.display = 'block';
+    // hiddenSecurityDiv.style.display = 'block';
     helperFunctionColor('red', 'green', 'Disable');
 
     securityParagraph.textContent = 'Security mode has been turned on.';
@@ -300,4 +300,12 @@ submitCSV.addEventListener('click', async function () {
     filledInputs = 0;
     inputValues = [];
   }
+});
+
+// ALL CODE BELOW IS FOR THE SECURITY QUESTION INPUT
+const securityInputButton = document.querySelector('.security-input-button');
+const securityInputValue = document.querySelector('#security-input');
+securityInputButton.addEventListener('click', function () {
+  console.log(securityInputValue);
+  if (securityInputValue.length === 0) console.log('0');
 });

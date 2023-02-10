@@ -49,6 +49,7 @@ app.patch('/lastStatus', (req, res) => {
 app.post('/csvCustomizer', (req, res) => {
   req.body = req.body.replaceAll(',', '');
   let arrInputValues = [...req.body];
+  console.log('from csv', arrInputValues);
   changeCSVValues(arrInputValues);
   res.status(200).send('Success!');
 });

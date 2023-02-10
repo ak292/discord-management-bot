@@ -5,11 +5,13 @@
 
 # To-Do-List
 
-- Fix HTML/CSS on both pages
-- Fix security question input (hide/show)
+- Make sure code works when security option enabled and is included in CSV file
+- Add client side validations for things like turning security mode on requiring you to have a question etc.
+- Make code more reusable
 - Add custom security question functionality
-- Fix the progress decision role updater functionality
 - Add (potentially) abbreviations feature, CS: Computer Science etc.
+- Change the bot verification methods from regular text or (!text) to actual bot commands
+- When comparing message array to the object results, make it break as soon as one option does not match, instead of having it loop through every single object waiting for it to reach 5 match count.
 
 - Additional functionality yet to be added (need more data to do it). For example:
   - If student withdraws, or changes course, etc.
@@ -25,6 +27,7 @@
 - Test requirements (DONE)
 
 # Install
-1) Run npm install
-2) Run npm start
-3) Navigate to localhost:3000 in your browser
+
+1. Run npm install
+2. Run npm start
+3. Navigate to localhost:3000 in your browser

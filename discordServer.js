@@ -23,18 +23,22 @@ let securityMatchFound = false;
 let matchFound = 0;
 let messageArray = '';
 let messageAuthor = '';
-let sortedMessageArray = [];
+let userFirstName = '';
+let userLastName = '';
+let userStudentNumber = '';
+let userLevel = '';
+let userCourseName = '';
 
 // object will be used if user decides to set their own
 // values for their csv file column numbers, otherwise
-// default values will be used. a 0 indicates value not given.
+// default values will be used. a -1 indicates value not given.
 export const csvValues = {
-  FirstName: 0,
-  LastName: 0,
-  StudentNumber: 0,
-  Level: 0,
-  CourseName: 0,
-  SecurityQuestionAnswer: 0,
+  FirstName: -1,
+  LastName: -1,
+  StudentNumber: -1,
+  Level: -1,
+  CourseName: -1,
+  SecurityQuestionAnswer: -1,
 };
 
 // function to change csvValues object to be used in
@@ -45,7 +49,7 @@ export function changeCSVValues(arrInputValues) {
   csvValues.StudentNumber = arrInputValues[2] - 1;
   csvValues.Level = arrInputValues[3] - 1;
   csvValues.CourseName = arrInputValues[4] - 1;
-  csvValues.SecurityQuestionAnswer = arrInputValues[5] - 1;
+  // csvValues.SecurityQuestionAnswer = arrInputValues[5] - 1;
 }
 
 // used in expressServer.js to check if a CSV file
@@ -95,7 +99,10 @@ export function initialCSVLoader(csvPath) {
   // load in CSV file
   fs.createReadStream(`${csvPath}`)
     .pipe(csv())
-    .on('data', (data) => results.push(data))
+    .on('data', (data) => {
+      results.push(data);
+      console.log(results);
+    })
     .on('end', () => {
       console.log('Successfully loaded in CSV file.'.green);
     });
@@ -168,12 +175,6 @@ export function botListeningEvents() {
     messageAuthor = message.author.id;
     messageArray = message.content.split(' ');
 
-    // sortedMessageArray.splice(
-    //   csvValues.SecurityQuestionAnswer,
-    //   0,
-    //   messageArray[5]
-    // );
-
     // if user message is longer than 5 or 6 length, they have
     // incorrectly formatted their message (eg. extra spaces)
     if (messageArray.length !== 5 && messageArray.length !== 6) {
@@ -183,58 +184,109 @@ export function botListeningEvents() {
     }
 
     if (messageArray.length === 5) {
-      // sorting message array based on the csv column number values that the user input
-      // this allows for the csv to be customized by the user and the code still works
-      sortedMessageArray.splice(csvValues.FirstName, 0, messageArray[0]);
-      sortedMessageArray.splice(csvValues.LastName, 0, messageArray[1]);
-      sortedMessageArray.splice(csvValues.StudentNumber, 0, messageArray[2]);
-      sortedMessageArray.splice(csvValues.Level, 0, messageArray[3]);
-      sortedMessageArray.splice(csvValues.CourseName, 0, messageArray[4]);
-      // outer for loop is for results object
-      // inner for loop is for users message content
-      outerloop: for (let i = 0; i < results.length; i++) {
+      // for loop is for results object
+      for (let i = 0; i < results.length; i++) {
         // reset matchFound for every row
         matchFound = 0;
-        for (let j = 0; j < messageArray.length; j++) {
-          if (
-            sortedMessageArray[j].toUpperCase() === Object.values(results[i])[j]
-          ) {
-            matchFound++;
-          }
 
-          if (matchFound === 5) break outerloop;
+        userFirstName = messageArray[0].toUpperCase();
+        userLastName = messageArray[1].toUpperCase();
+        userStudentNumber = messageArray[2].toUpperCase();
+        userLevel = messageArray[3].toUpperCase();
+        userCourseName = messageArray[4].toUpperCase();
+
+        if (userFirstName === Object.values(results[i])[csvValues.FirstName]) {
+          matchFound++;
+        } else {
+          continue;
         }
+
+        if (userLastName === Object.values(results[i])[csvValues.LastName]) {
+          matchFound++;
+        } else {
+          continue;
+        }
+
+        if (
+          userStudentNumber ===
+          Object.values(results[i])[csvValues.StudentNumber]
+        ) {
+          matchFound++;
+        } else {
+          continue;
+        }
+
+        if (userLevel === Object.values(results[i])[csvValues.Level]) {
+          matchFound++;
+        } else {
+          continue;
+        }
+
+        if (
+          userCourseName === Object.values(results[i])[csvValues.CourseName]
+        ) {
+          matchFound++;
+        } else {
+          continue;
+        }
+
+        if (matchFound === 5) break;
       }
     } else {
       let courseName = messageArray[4] + messageArray[5];
       messageArray = messageArray.slice(0, 4);
       messageArray = [...messageArray, courseName];
 
-      // sorting message array based on the csv column number values that the user input
-      // this allows for the csv to be customized by the user and the code still works
-      sortedMessageArray.splice(csvValues.FirstName, 0, messageArray[0]);
-      sortedMessageArray.splice(csvValues.LastName, 0, messageArray[1]);
-      sortedMessageArray.splice(csvValues.StudentNumber, 0, messageArray[2]);
-      sortedMessageArray.splice(csvValues.Level, 0, messageArray[3]);
-      sortedMessageArray.splice(csvValues.CourseName, 0, messageArray[4]);
-
-      outerloop: for (let i = 0; i < results.length; i++) {
+      for (let i = 0; i < results.length; i++) {
         // reset matchFound for every row
         matchFound = 0;
-        for (let j = 0; j < messageArray.length; j++) {
-          if (
-            sortedMessageArray[j].toUpperCase() === Object.values(results[i])[j]
-          ) {
-            matchFound++;
-          }
-          if (matchFound === 5) {
-            break outerloop;
-          }
+
+        userFirstName = messageArray[0].toUpperCase();
+        userLastName = messageArray[1].toUpperCase();
+        userStudentNumber = messageArray[2].toUpperCase();
+        userLevel = messageArray[3].toUpperCase();
+        userCourseName = messageArray[4].toUpperCase();
+
+        if (userFirstName === Object.values(results[i])[csvValues.FirstName]) {
+          matchFound++;
+        } else {
+          continue;
         }
+
+        if (userLastName === Object.values(results[i])[csvValues.LastName]) {
+          matchFound++;
+        } else {
+          continue;
+        }
+
+        if (
+          userStudentNumber ===
+          Object.values(results[i])[csvValues.StudentNumber]
+        ) {
+          matchFound++;
+        } else {
+          continue;
+        }
+
+        if (userLevel === Object.values(results[i])[csvValues.Level]) {
+          matchFound++;
+        } else {
+          continue;
+        }
+
+        if (
+          userCourseName === Object.values(results[i])[csvValues.CourseName]
+        ) {
+          matchFound++;
+        } else {
+          continue;
+        }
+
+        if (matchFound === 5) break;
       }
     }
 
-    studentNumber = sortedMessageArray[csvValues.StudentNumber];
+    studentNumber = userStudentNumber;
 
     // total 5 rows should match, so if matchfound = 5
     // all rows matched and student is successfully identified
@@ -291,8 +343,8 @@ async function nameAndRoleChanger() {
     'CYBERSECURITY',
     'DATASCIENCE',
   ];
-  let userRole = sortedMessageArray[csvValues.CourseName];
-  let userLevel = sortedMessageArray[csvValues.Level];
+  let userRole = userCourseName;
+  let usersLevel = userLevel;
   userRole = userRole.toUpperCase();
 
   // all options other than Software Eng = NONSE
@@ -304,21 +356,13 @@ async function nameAndRoleChanger() {
   members.forEach((member) => {
     try {
       if (member.user.id === messageAuthor) {
-        sortedMessageArray[csvValues.FirstName] =
-          sortedMessageArray[csvValues.FirstName].toLowerCase();
-        sortedMessageArray[csvValues.StudentNumber] =
-          sortedMessageArray[csvValues.StudentNumber].toLowerCase();
+        userFirstName = userFirstName.toLowerCase();
+        userStudentNumber = userStudentNumber.toLowerCase();
         member
           .setNickname(
-            `${sortedMessageArray[
-              csvValues.FirstName
-            ][0].toUpperCase()}${sortedMessageArray[csvValues.FirstName]
+            `${userFirstName[0].toUpperCase()}${userFirstName
               .slice(1)
-              .toLowerCase()} ${sortedMessageArray[
-              csvValues.LastName
-            ][0].toUpperCase()} / ${
-              sortedMessageArray[csvValues.StudentNumber]
-            }`
+              .toLowerCase()} ${userLastName[0].toUpperCase()} / ${userStudentNumber}`
           )
           .catch((e) =>
             console.log(
@@ -326,7 +370,7 @@ async function nameAndRoleChanger() {
             )
           );
 
-        let usersRole = userLevel + userRole;
+        let usersRole = usersLevel + userRole;
         usersRole = usersRole.toUpperCase();
         member.roles.add(roles[usersRole]);
       }

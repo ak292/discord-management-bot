@@ -12,36 +12,16 @@
   <body>
     <div class="intro-flex">
       <h1>Welcome to your Discord Management Bot Dashboard!</h1>
-      <h2>
-        Looking to update roles based on progress decisions?
-        <a href="#">Click here!</a>
-      </h2>
-      <h2>
+      <p>
         Looking to verify new students who join the Discord server using a CSV?
         See below.
-      </h2>
-    </div>
-    <div class="security-flex">
-      <p class="security-paragraph"></p>
-      <button class="security-button">Enable</button>
-      <div class="help-tip">
-        <p>
-          Enabling this option will make the bot ask users a security question
-          to confirm their identity upon them joining the Discord server. This
-          is optional, as this security feature may not always be required, and
-          will require you to input a column number containing security question
-          answers in your CSV file.
-        </p>
-        <div class="hidden-security-div">
-          <input />
-        </div>
-      </div>
+      </p>
     </div>
     <div div class="csv-config">
       <p class="options-msg">
-        Please number each column depending on how YOUR specific CSV file is
-        structured. This will help the bot understand how to parse your CSV
-        file.
+        Please number each column depending on how YOUR specific "verification"
+        CSV file is structured. This will help the bot understand how to parse
+        your CSV file.
       </p>
       <p class="submit-csv-message"></p>
       <div class="main-container">
@@ -68,9 +48,33 @@
       </div>
       <button class="submit-csv">Submit</button>
     </div>
+    <div class="security-flex">
+      <p class="security-paragraph"></p>
+      <button class="security-button">Enable</button>
+      <div class="help-tip">
+        <p>
+          Enabling this option will make the bot ask users a security question
+          to confirm their identity upon them joining the Discord server. This
+          is optional, as this security feature may not always be required, and
+          will require you to input a column number containing security question
+          answers in your CSV file. You can customize what security question
+          you'd like the bot to ask below.
+        </p>
+        <!-- <div class="hidden-security-div">
+          <input />
+        </div> -->
+      </div>
+    </div>
+    <div class="security-input">
+      <label>If applicable, type your security question here.</label>
+      <input id="security-input" />
+      <button class="security-input-button">Submit</button>
+    </div>
     <div class="two-drag-drops">
       <div class="h3-upload">
-        <h4 class="h3-progress">Drop your CSV file below.</h4>
+        <h4 class="h3-progress">
+          Drag & Drop your "verification" CSV file below.
+        </h4>
         <p class="upload-message-two"></p>
 
         <section class="drop-area" id="drop-area-two">
@@ -84,6 +88,31 @@
               <p>
                 Configure your CSV file using the options above so the bot can
                 understand how to parse your CSV file!
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="h3-upload">
+        <h4 class="h3-progress">Drag & Drop progress decisions CSV file.</h4>
+        <p class="upload-message"></p>
+
+        <section class="drop-area" id="drop-area-one">
+          <i class="far fa-images"></i>
+          <p>Drop your CSV file here!</p>
+          <div class="p-flex">
+            <p>
+              <small
+                >CSV file has to follow a certain structure for the code to
+                work.</small
+              >
+            </p>
+            <div class="help-tip">
+              <p>
+                Since the progress decisions CSV file only requires 2 columns
+                (and they are both required), it is assumed that the first and
+                second columns of the CSV file will contain the students UP
+                numbers and the students progress decisions respectively.
               </p>
             </div>
           </div>
