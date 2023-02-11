@@ -18,7 +18,6 @@ let progressResults = [];
 // use of them in mutliple functions below
 let securityQuestionAnswer = '';
 let securityQuestion = false;
-let studentNumber = '';
 let securityMatchFound = false;
 let matchFound = 0;
 let messageArray = '';
@@ -359,8 +358,6 @@ export function botListeningEvents() {
 
       if (matchFound === 5) break;
     }
-
-    studentNumber = userStudentNumber;
 
     // total 5 rows should match, so if matchfound = 5
     // all rows matched and student is successfully identified
