@@ -189,7 +189,8 @@ export function botListeningEvents() {
         'No CSV file has been uploaded yet, so the bot cannot verify you. Please try again later.'
       );
 
-    // seperate event listener for the security question mode
+    // seperate event listener for the security question mode question
+    // user answers security question with a !<ANSWER-HERE>
     if (message.content.startsWith('!')) {
       securityMatchFound = false;
       foundUser = false;
@@ -199,31 +200,35 @@ export function botListeningEvents() {
         .join('')
         .toUpperCase();
 
-      // if user tries to answer a security question BEFORE verifying any of their other original info
-      // this is just here as a simple safe guard to provide an appropriate error message to user
+      // check if user is in activeUsers, if not, see below
       for (let i = 0; i < activeUsers.length; i++) {
         if (Object.values(activeUsers[i])[0] === message.author.id) {
           foundUser = true;
         }
       }
 
+      // if user tries to answer a security question BEFORE verifying any of their other original info
+      // this is just here as a simple safe guard to provide an appropriate error message to user
       if (!foundUser) {
         return message.reply(
           'Error! You must verify your other information, as previously asked, before attempting to answer a security question.'
         );
       }
 
-      // **************************************************************** FIX BELOW CODE TO WORK WITH ACTIVEUSERS ARRAY OF ObjECTS
       outerloop: for (let i = 0; i < results.length; i++) {
         for (let j = 0; j < activeUsers.length; j++) {
+          // find users student number in activeUsers and match it to the results object from CSV
+          // make sure users security question answer is correct
           if (
             Object.values(results[i])[csvValues.StudentNumber] ===
               Object.values(activeUsers[j])[1].toUpperCase() &&
             Object.values(results[i])[csvValues.SecurityQuestionAnswer] ===
               securityQuestionAnswer
           ) {
-            // only if the user who typed message typed the value assosciated with their id
-            // this prevents issues if multiple users are using the bot at the same time (User A's answer cannot work for User B)
+            // only if the user who typed message typed the security value assosciated with their id
+            // this makes sure if two people have the same security question answer (for example), no issues will arise, because
+            // we check if the ID of the user found in activeUsers matches with the message.author.id
+            // this also prevents issues if multiple users are using the bot at the same time (User A's answer cannot work for User B)
             if (Object.values(activeUsers[j])[0] === message.author.id) {
               securityMatchFound = true;
               break outerloop;
@@ -235,7 +240,7 @@ export function botListeningEvents() {
       }
 
       if (!securityMatchFound) {
-        // *********************************************************************************** find user who didnt get verifeid and remove from activeusers
+        // find user who didnt get verified and remove from activeusers, they must restart verification
         for (let i = 0; i < activeUsers.length; i++) {
           if (Object.values(activeUsers[i])[0] === message.author.id) {
             activeUsers.splice(i, 1);
@@ -247,7 +252,7 @@ export function botListeningEvents() {
         );
       } else {
         message.reply('Correct answer! Changing your nickname and role now.');
-        // *********************************************************************************** find user who did get verifeid and remove from activeusers
+        // find user who did get verified and remove from activeusers, they are done verification.
         for (let i = 0; i < activeUsers.length; i++) {
           if (Object.values(activeUsers[i])[0] === message.author.id) {
             activeUsers.splice(i, 1);
@@ -279,7 +284,10 @@ export function botListeningEvents() {
       }
     }
 
-    // if user not in activeUsers, push user in, add bool value here ****************************************8
+    // if user not in activeUsers, push user student id and their discord ID.
+    // this will be used later in the security mode event listener (if security mode is enabled) to verify
+    // that the user who is answering the security question is the same user who just verified themself.
+
     if (!foundUserId) {
       activeUsers.push({
         id: message.author.id,
@@ -474,6 +482,7 @@ function helperRoleUpdate(memberToEdit, roleRemoveId, roleAddId) {
   memberToEdit.roles.add(roleAddId);
 }
 
+// function below is for updating roles based on progress decisions
 export async function botCSVUpdater(path) {
   // load in updated CSV file
   fs.createReadStream(`${path}`)
@@ -524,10 +533,10 @@ export async function botCSVUpdater(path) {
                 break;
               case roles['L6NONSE']:
               case roles['L6SOFTWAREENGINEERING']:
-              case roles['MENG']:
+              case roles['L7MENG']:
                 member.roles.remove(roles['L6NONSE']);
                 member.roles.remove(roles['L6SOFTWAREENGINEERING']);
-                member.roles.remove(roles['MENG']);
+                member.roles.remove(roles['L7MENG']);
                 member.roles.add(roles['ALUMNI']);
                 break;
               default:
