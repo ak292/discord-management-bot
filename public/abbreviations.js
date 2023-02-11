@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', initializeStatus);
 abbreviationButton.addEventListener('click', async function () {
   if (!submitAbbreviations) {
     const message =
-      'Error! You cannot turn activation mode on until you have submit your abbreviation values.';
+      'Error! You cannot turn abbreviation mode on until you have submit your abbreviation values.';
     textContentAndStyling(
       abbreviationParagraphMessage,
       'inline-block',
