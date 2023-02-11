@@ -121,7 +121,7 @@ let roles = {
   L5SOFTWAREENGINEERING: '1036289626446516274',
   L6NONSE: '1036313942005399553',
   L6SOFTWAREENGINEERING: '1036289659501805648',
-  MENG: '1073880628866592848',
+  L7MENG: '1073880628866592848',
   ALUMNI: '1066931568112848990',
 };
 
@@ -462,14 +462,7 @@ async function nameAndRoleChanger() {
             )
           );
 
-        // MENG has no associated Level but all other roles do
-        let usersRole = '';
-        if (userRole !== 'MENG') {
-          usersRole = usersLevel + userRole;
-        } else {
-          usersRole = userRole;
-        }
-
+        let usersRole = usersLevel + userRole;
         usersRole = usersRole.toUpperCase();
         member.roles.add(roles[usersRole]);
       }
