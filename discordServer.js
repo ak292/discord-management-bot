@@ -29,6 +29,14 @@ let userStudentNumber = '';
 let userLevel = '';
 let userCourseName = '';
 
+// this array keeps track of users who are currently in the
+// proccess of verifying themselves with the bot
+// this is to avoid any collisions when two users are using the bot
+// at the same time. This is used in the Security feature
+let activeUsers = [];
+
+let foundUser = false;
+
 // object will be used if user decides to set their own
 // values for their csv file column numbers, otherwise
 // default values will be used. a -1 indicates value not given.
@@ -154,30 +162,68 @@ export function botListeningEvents() {
 
     // seperate event listener for the security question mode
     if (message.content.startsWith('!')) {
+      securityMatchFound = false;
+      foundUser = false;
       securityQuestionAnswer = message.content
         .split('')
         .slice(1)
         .join('')
         .toUpperCase();
 
-      for (let i = 0; i < results.length; i++) {
-        if (
-          Object.values(results[i])[csvValues.StudentNumber] ===
-            studentNumber &&
-          Object.values(results[i])[csvValues.SecurityQuestionAnswer] ===
-            securityQuestionAnswer
-        ) {
-          securityMatchFound = true;
-          break;
-        } else {
-          securityMatchFound = false;
+      // if user tries to answer a security question BEFORE verifying any of their other original info
+      // this is just here as a simple safe guard to provide an appropriate error message to user
+      for (let i = 0; i < activeUsers.length; i++) {
+        if (Object.values(activeUsers[i])[0] === message.author.id) {
+          foundUser = true;
+        }
+      }
+
+      if (!foundUser) {
+        return message.reply(
+          'Error! You must verify your other information, as previously asked, before attempting to answer a security question.'
+        );
+      }
+
+      // **************************************************************** FIX BELOW CODE TO WORK WITH ACTIVEUSERS ARRAY OF ObjECTS
+      outerloop: for (let i = 0; i < results.length; i++) {
+        for (let j = 0; j < activeUsers.length; j++) {
+          if (
+            Object.values(results[i])[csvValues.StudentNumber] ===
+              Object.values(activeUsers[j])[1].toUpperCase() &&
+            Object.values(results[i])[csvValues.SecurityQuestionAnswer] ===
+              securityQuestionAnswer
+          ) {
+            // only if the user who typed message typed the value assosciated with their id
+            // this prevents issues if multiple users are using the bot at the same time (User A's answer cannot work for User B)
+            if (Object.values(activeUsers[j])[0] === message.author.id) {
+              securityMatchFound = true;
+              break outerloop;
+            }
+          } else {
+            securityMatchFound = false;
+          }
         }
       }
 
       if (!securityMatchFound) {
-        return message.reply('Incorrect answer. Please try again.');
+        // *********************************************************************************** find user who didnt get verifeid and remove from activeusers
+        for (let i = 0; i < activeUsers.length; i++) {
+          if (Object.values(activeUsers[i])[0] === message.author.id) {
+            activeUsers.splice(i, 1);
+          }
+        }
+
+        return message.reply(
+          'Incorrect answer. Sorry, you must restart the verification proccess. Please type your first name, surname, student number, level (L4/L5/L6), and course title in one message seperated by spaces.'
+        );
       } else {
         message.reply('Correct answer! Changing your nickname and role now.');
+        // *********************************************************************************** find user who did get verifeid and remove from activeusers
+        for (let i = 0; i < activeUsers.length; i++) {
+          if (Object.values(activeUsers[i])[0] === message.author.id) {
+            activeUsers.splice(i, 1);
+          }
+        }
 
         nameAndRoleChanger();
       }
@@ -193,6 +239,23 @@ export function botListeningEvents() {
       return message.reply(
         'Incorrect information provided. Please make sure you have spelled everything correctly and followed the proper format. Example: Josh Smith UP12345 L5 Computer Science'
       );
+    }
+
+    let foundUserId = false;
+
+    // if user not in activeUsers, push user in, add bool value here ****************************************8
+    for (let i = 0; i < activeUsers.length; i++) {
+      if (Object.values(activeUsers[i])[0].includes(message.author.id)) {
+        foundUserId = true;
+        break;
+      }
+    }
+
+    if (!foundUserId) {
+      activeUsers.push({
+        id: message.author.id,
+        studentNumber: messageArray[2].toUpperCase(),
+      });
     }
 
     if (messageArray.length === 5) {
@@ -305,7 +368,7 @@ export function botListeningEvents() {
     if (matchFound === 5) {
       if (securityQuestion) {
         return await message.reply(
-          `For security purposes, please answer: ${customSecurityQuestion} Type your answer with an exclamation mark followed by your middle name. For example: !Answer`
+          `For security purposes, please answer: ${customSecurityQuestion} Type your answer with an exclamation mark followed by your answer. For example: !Answer`
         );
       }
 
