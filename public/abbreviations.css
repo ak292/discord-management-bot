@@ -1,0 +1,236 @@
+body {
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+button {
+  font-weight: bold;
+  width: 70px;
+  height: 30px;
+  background-color: black;
+  color: white;
+  border-radius: 5px;
+}
+
+button:hover {
+  cursor: pointer;
+  background-color: white;
+  color: black;
+}
+
+button:active {
+  background-color: white;
+  color: black;
+}
+
+.submit-abbreviation {
+  margin-top: 20px;
+}
+
+.abbreviation-config {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.main-container {
+  display: flex;
+  gap: 15px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.container-1-abbreviation,
+.container-2-abbreviation,
+.container-3-abbreviation,
+.container-4-abbreviation,
+.container-5-abbreviation {
+  display: grid;
+  gap: 5px;
+  justify-items: center;
+}
+
+.container-5-abbreviation {
+  align-self: flex-start;
+}
+
+.abbreviations-msg {
+  width: 500px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+input {
+  height: 30px;
+  width: 250px;
+}
+
+.submit-abbreviation-message {
+  display: none;
+}
+
+.homepage-msg {
+  display: flex;
+  justify-content: center;
+}
+
+.homepage-link {
+  margin: 0 10px;
+}
+
+/* COPIED CSS */
+a {
+  box-shadow: inset 0 0 0 0 #54b3d6;
+  color: #54b3d6;
+  margin: 0 -0.25rem;
+  padding: 0 0.25rem;
+  transition: color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* COPIED CSS */
+a:hover {
+  box-shadow: inset 100px 0 0 0 #54b3d6;
+  color: white;
+}
+
+.abbreviation-flex {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.abbreviation-paragraph {
+  font-size: 24px;
+  font-weight: bold;
+  color: red;
+}
+
+.abbreviation-input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+#abbreviation-input {
+  width: 400px;
+}
+
+.abbreviation-message-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.abbreviation-paragraph-message {
+  width: 500px;
+  font-weight: bold;
+}
+
+.abbreviation-input-message {
+  font-weight: bold;
+}
+
+.abbreviation-input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/******************* CAREFUL OF THIS CSS, COPY PASTED ****************/
+.help-tip {
+  top: 18px;
+  right: 18px;
+  text-align: center;
+  background-color: black;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  line-height: 26px;
+  cursor: default;
+  z-index: 1;
+}
+
+.help-tip:before {
+  content: '?';
+  font-weight: bold;
+  color: #fff;
+}
+
+.help-tip:hover p {
+  display: block;
+  transform-origin: 100% 0%;
+  -webkit-animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.help-tip p {
+  /* The tooltip */
+  display: none;
+  text-align: left;
+  background-color: #1e2021;
+  padding: 20px;
+  width: 300px;
+  border-radius: 3px;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+  right: -4px;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.help-tip p:before {
+  /* The pointer of the tooltip */
+  position: absolute;
+  content: '';
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-bottom-color: #1e2021;
+  right: 10px;
+  top: -12px;
+}
+
+.help-tip p:after {
+  /* Prevents the tooltip from being hidden */
+  width: 100%;
+  height: 40px;
+  content: '';
+  position: absolute;
+  top: -40px;
+  left: 0;
+}
+
+/* CSS animation */
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  100% {
+    opacity: 100%;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+/******************* CAREFUL OF THIS CSS, COPY PASTED ****************/

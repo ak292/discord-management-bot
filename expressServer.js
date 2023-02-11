@@ -15,6 +15,9 @@ import {
   changeInitialCSV,
   changeCSVValues,
   changeCustomSecurityQuestion,
+  changeAbbreviations,
+  getLastKnownAbbreviationStatus,
+  toggleLastKnownAbbreviationStatus,
 } from './discordServer.js';
 import { deleteCSVFiles, createCSVFile } from './expressHelpers.js';
 import { createRequire } from 'module';
@@ -30,6 +33,7 @@ const filePath = path.join(__dirname, 'public');
 app.use(express.static(filePath));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.text());
+app.use(express.json());
 
 app.get('/', (req, res) => {
   res.send('index');
@@ -43,14 +47,27 @@ app.get('/lastStatus', (req, res) => {
   res.send(getLastKnownStatus());
 });
 
+app.get('/lastAbbreviationStatus', (req, res) => {
+  res.send(getLastKnownAbbreviationStatus());
+});
+
 app.patch('/lastStatus', (req, res) => {
   res.send(toggleLastKnownStatus());
 });
 
+app.patch('/lastAbbreviationStatus', (req, res) => {
+  res.send(toggleLastKnownAbbreviationStatus());
+});
+
 app.post('/csvCustomizer', (req, res) => {
-  req.body = req.body.replaceAll(',', '');
-  let arrInputValues = [...req.body];
+  let arrInputValues = req.body.inputValues;
   changeCSVValues(arrInputValues);
+  res.status(200).send('Success!');
+});
+
+app.post('/abbreviations', (req, res) => {
+  let arrInputValues = req.body.abbreviationInputs;
+  changeAbbreviations(arrInputValues);
   res.status(200).send('Success!');
 });
 

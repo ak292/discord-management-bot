@@ -37,10 +37,12 @@ let activeUsers = [];
 
 let foundUser = false;
 
+let abbreviationsMode = false;
+
 // object will be used if user decides to set their own
 // values for their csv file column numbers, otherwise
 // default values will be used. a -1 indicates value not given.
-export const csvValues = {
+const csvValues = {
   FirstName: -1,
   LastName: -1,
   StudentNumber: -1,
@@ -64,8 +66,33 @@ export function changeCSVValues(arrInputValues) {
   csvValues.CourseName = arrInputValues[4] - 1;
 }
 
+const abbreviations = {
+  COMPUTERSCIENCE: '',
+  CYBERSECURITY: '',
+  COMPUTING: '',
+  NETWORKS: '',
+  SOFTWAREENGINEERING: '',
+  INFORMATIONSYSTEMS: '',
+  MENG: '',
+  DATASCIENCE: '',
+  CREATIVECOMPUTING: '',
+};
+
+export function changeAbbreviations(abbreviationValues) {
+  abbreviationsMode = true;
+  abbreviations.COMPUTERSCIENCE = abbreviationValues[0];
+  abbreviations.COMPUTING = abbreviationValues[1];
+  abbreviations.CYBERSECURITY = abbreviationValues[2];
+  abbreviations.INFORMATIONSYSTEMS = abbreviationValues[3];
+  abbreviations.COMPUTERNETWORKS = abbreviationValues[4];
+  abbreviations.SOFTWAREENGINEERING = abbreviationValues[5];
+  abbreviations.DATASCIENCE = abbreviationValues[6];
+  abbreviations.CREATIVECOMPUTING = abbreviationValues[7];
+  abbreviations.MENG = abbreviationValues[8];
+}
+
 // security question submit by user to be used in expressServer.js
-export let customSecurityQuestion = '';
+let customSecurityQuestion = '';
 
 // function to allow user to change the security question to whatever they want
 // to be used in expressServer.js
@@ -84,7 +111,9 @@ export function changeInitialCSV() {
 }
 
 let lastKnownSecurityStatus = '';
+let lastKnownAbbreviationStatus = '';
 
+let userRoleInput = '';
 let roles = {
   L4NONSE: '1036313827983249468',
   L4SOFTWAREENGINEERING: '1036289578648215654',
@@ -92,6 +121,7 @@ let roles = {
   L5SOFTWAREENGINEERING: '1036289626446516274',
   L6NONSE: '1036313942005399553',
   L6SOFTWAREENGINEERING: '1036289659501805648',
+  MENG: '1073880628866592848',
   ALUMNI: '1066931568112848990',
 };
 
@@ -140,7 +170,7 @@ export function botListeningEvents() {
       \nBelow is a proper example of how to verify yourself, and all the course options are also below for your convenience.`
     );
     member.send(
-      `Example: Josh Smith UP12345 L5 Computer Science. \nCourse options: Computer Networks, Computer Science, Information Systems, Computing, Creative Computing, Cyber Security, Data Science, Software Engineering`
+      `Example: Josh Smith UP12345 L5 Computer Science. \nCourse options: Computer Networks, Computer Science, Information Systems, Computing, Creative Computing, Cyber Security, Data Science, Software Engineering, and MEng`
     );
   });
 
@@ -269,6 +299,13 @@ export function botListeningEvents() {
         userStudentNumber = messageArray[2].toUpperCase();
         userLevel = messageArray[3].toUpperCase();
         userCourseName = messageArray[4].toUpperCase();
+        userRoleInput = userCourseName;
+
+        if (abbreviationsMode) {
+          userCourseName = abbreviations[userCourseName];
+          console.log('user', userCourseName);
+          console.log('m234', Object.values(results[i])[csvValues.CourseName]);
+        }
 
         if (userFirstName === Object.values(results[i])[csvValues.FirstName]) {
           matchFound++;
@@ -298,7 +335,8 @@ export function botListeningEvents() {
         }
 
         if (
-          userCourseName === Object.values(results[i])[csvValues.CourseName]
+          userCourseName.toUpperCase() ===
+          Object.values(results[i])[csvValues.CourseName].toUpperCase()
         ) {
           matchFound++;
         } else {
@@ -321,6 +359,16 @@ export function botListeningEvents() {
         userStudentNumber = messageArray[2].toUpperCase();
         userLevel = messageArray[3].toUpperCase();
         userCourseName = messageArray[4].toUpperCase();
+        userRoleInput = userCourseName;
+
+        if (abbreviationsMode) {
+          userCourseName = abbreviations[userCourseName];
+          console.log('user', userCourseName);
+          console.log(
+            'm35345345',
+            Object.values(results[i])[csvValues.CourseName]
+          );
+        }
 
         if (userFirstName === Object.values(results[i])[csvValues.FirstName]) {
           matchFound++;
@@ -407,6 +455,20 @@ export function toggleLastKnownStatus() {
   }
 }
 
+export function getLastKnownAbbreviationStatus() {
+  return lastKnownAbbreviationStatus;
+}
+
+export function toggleLastKnownAbbreviationStatus() {
+  if (!lastKnownAbbreviationStatus || lastKnownAbbreviationStatus === '') {
+    lastKnownAbbreviationStatus = true;
+    return 'Last Known Abbreviation Status: Enabled.';
+  } else {
+    lastKnownAbbreviationStatus = false;
+    return 'Last Known Abbreviation Status: Disabled.';
+  }
+}
+
 // reusable function for changing users role and nickname
 // once they have been verified
 async function nameAndRoleChanger() {
@@ -418,7 +480,7 @@ async function nameAndRoleChanger() {
     'CYBERSECURITY',
     'DATASCIENCE',
   ];
-  let userRole = userCourseName;
+  let userRole = userRoleInput;
   let usersLevel = userLevel;
   userRole = userRole.toUpperCase();
 

@@ -277,9 +277,14 @@ submitCSV.addEventListener('click', async function () {
     filledInputs === 6 ||
     (filledInputs === 5 && securityInput.value.length === 0)
   ) {
+    const body = { inputValues };
+
     const options = {
       method: 'POST',
-      body: inputValues,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
     };
 
     let response = await fetch('/csvCustomizer', options);
