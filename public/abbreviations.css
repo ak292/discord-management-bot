@@ -28,6 +28,11 @@ button:active {
   color: black;
 }
 
+input {
+  height: 30px;
+  width: 250px;
+}
+
 .submit-abbreviation {
   margin-top: 20px;
 }
@@ -67,11 +72,6 @@ button:active {
   font-size: 16px;
 }
 
-input {
-  height: 30px;
-  width: 250px;
-}
-
 .submit-abbreviation-message {
   display: none;
 }
@@ -85,7 +85,6 @@ input {
   margin: 0 10px;
 }
 
-/* COPIED CSS */
 a {
   box-shadow: inset 0 0 0 0 #54b3d6;
   color: #54b3d6;
@@ -94,7 +93,6 @@ a {
   transition: color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-/* COPIED CSS */
 a:hover {
   box-shadow: inset 100px 0 0 0 #54b3d6;
   color: white;
@@ -146,7 +144,7 @@ a:hover {
   align-items: center;
 }
 
-/******************* CAREFUL OF THIS CSS, COPY PASTED ****************/
+/******************* THE CSS FROM THIS POINT FORWARD IS COPY PASTED, I DO NOT TAKE CREDIT FOR IT ****************/
 .help-tip {
   top: 18px;
   right: 18px;
@@ -233,4 +231,3 @@ a:hover {
     opacity: 100%;
   }
 }
-/******************* CAREFUL OF THIS CSS, COPY PASTED ****************/

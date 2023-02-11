@@ -5,15 +5,11 @@
 
 # To-Do-List
 
-- Make code more reusable
-- Add (potentially) abbreviations feature, CS: Computer Science etc. (with MEng as well), but keep in mind MEng wont count for progress roles updating
-- Add display none style to security message paragraph to fix spacing
-- Additional functionality yet to be added (need more data to do it). For example:
-  - If student withdraws, or changes course, etc.
-  - Students optional Modules
-
 # Completed tasks
 
+- Make code more reusable/cleaner/add comments where neccessary (DONE)
+- Add (potentially) abbreviations feature, CS: Computer Science etc. (with MEng as well), but keep in mind MEng wont count for progress roles updating (DONE)
+- Add display none style to security message paragraph to fix spacing (DONE)
 - Make sure code works when security option enabled and is included in CSV file (DONE)
 - Add client side validations for things like turning security mode on requiring you to have a question etc. (DONE)
 - Add custom security question functionality (DONE)

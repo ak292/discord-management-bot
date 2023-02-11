@@ -3,6 +3,7 @@ const securityButton = document.querySelector('.security-button');
 const securityParagraph = document.querySelector('.security-paragraph');
 const uploadMessage = document.querySelector('.upload-message');
 const uploadMessageTwo = document.querySelector('.upload-message-two');
+
 let lastKnownStatus = '';
 let message = '';
 
@@ -32,22 +33,42 @@ async function initializeStatus() {
 // run function everytime page loads (so if user refreshes page)
 document.addEventListener('DOMContentLoaded', initializeStatus);
 
+// helper function for setting text content/styling
+function textContentAndStyling(
+  elementToModify,
+  displayStyle,
+  fontWeight,
+  color,
+  textContent
+) {
+  elementToModify.style.display = displayStyle;
+  elementToModify.style.fontWeight = fontWeight;
+  elementToModify.style.color = color;
+  elementToModify.textContent = textContent;
+  setTimeout(() => {
+    elementToModify.style.display = 'none';
+    elementToModify.textContent = '';
+    elementToModify.style.color = '';
+    elementToModify.style.fontWeight = '';
+    elementToModify.style.display = 'none';
+  }, 5000);
+}
+
 const securityParaMessage = document.querySelector(
   '.security-paragraph-message'
 );
+
 securityButton.addEventListener('click', async () => {
   if (!submitSecurityColumn || !submitSecurityQuestion) {
-    securityParaMessage.display = 'inline-block';
-    securityParaMessage.style.color = 'red';
-    securityParaMessage.style.fontWeight = 'bold';
-    securityParaMessage.textContent =
+    const message =
       'Error! You must submit both a column # for the Security Question column & your custom security question to turn security mode on.';
-    setTimeout(() => {
-      securityParaMessage.display = 'none';
-      securityParaMessage.textContent = '';
-      securityParaMessage.style.fontWeight = '';
-      securityParaMessage.style.color = '';
-    }, 5000);
+    textContentAndStyling(
+      securityParaMessage,
+      'inline-block',
+      'bold',
+      'red',
+      message
+    );
     return;
   }
 
@@ -253,17 +274,16 @@ submitCSV.addEventListener('click', async function () {
   ) {
     filledInputs = 0;
     csvInputs.forEach((input) => (input.value = ''));
-    submitCSVMessage.style.display = 'inline-block';
-    submitCSVMessage.style.fontWeight = 'bold';
-    submitCSVMessage.style.color = 'red';
-    submitCSVMessage.textContent =
+
+    const message =
       'If you have security mode enabled, you must fill out all 6 columns (including the security question one).';
-    setTimeout(() => {
-      submitCSVMessage.textContent = '';
-      submitCSVMessage.style.color = '';
-      submitCSVMessage.style.fontWeight = '';
-      submitCSVMessage.style.display = 'none';
-    }, 5000);
+    textContentAndStyling(
+      submitCSVMessage,
+      'inline-block',
+      'bold',
+      'red',
+      message
+    );
     return;
   }
 
@@ -292,46 +312,40 @@ submitCSV.addEventListener('click', async function () {
     console.log(response);
 
     if (response === 'Success!') {
-      submitCSVMessage.style.display = 'inline-block';
-      submitCSVMessage.style.fontWeight = 'bold';
-      submitCSVMessage.style.color = 'green';
-      submitCSVMessage.textContent =
-        'Success! Your CSV configuration has been saved.';
-      setTimeout(() => {
-        submitCSVMessage.textContent = '';
-        submitCSVMessage.style.color = '';
-        submitCSVMessage.style.fontWeight = 'bold';
-        submitCSVMessage.style.display = 'none';
-      }, 5000);
+      const message = 'Success! Your CSV configuration has been saved.';
+      textContentAndStyling(
+        submitCSVMessage,
+        'inline-block',
+        'bold',
+        'green',
+        message
+      );
     } else {
-      submitCSVMessage.style.display = 'inline-block';
-      submitCSVMessage.style.fontWeight = 'bold';
-      submitCSVMessage.style.color = 'red';
-      submitCSVMessage.textContent =
+      const message =
         'There was an error saving your configuration, please try again later.';
-      setTimeout(() => {
-        submitCSVMessage.textContent = '';
-        submitCSVMessage.style.color = '';
-        submitCSVMessage.style.fontWeight = '';
-        submitCSVMessage.style.display = 'none';
-      }, 5000);
+      textContentAndStyling(
+        submitCSVMessage,
+        'inline-block',
+        'bold',
+        'red',
+        message
+      );
     }
 
     filledInputs = 0;
     inputValues = [];
     csvInputs.forEach((input) => (input.value = ''));
   } else {
-    submitCSVMessage.style.display = 'inline-block';
-    submitCSVMessage.style.fontWeight = 'bold';
-    submitCSVMessage.style.color = 'red';
-    submitCSVMessage.textContent =
+    const message =
       'Error! Please make sure you fill out all the values (aside from the Security Question one, which is optional)';
-    setTimeout(() => {
-      submitCSVMessage.textContent = '';
-      submitCSVMessage.style.color = '';
-      submitCSVMessage.style.fontWeight = '';
-      submitCSVMessage.style.display = 'none';
-    }, 5000);
+    textContentAndStyling(
+      submitCSVMessage,
+      'inline-block',
+      'bold',
+      'red',
+      message
+    );
+
     filledInputs = 0;
     inputValues = [];
   }
@@ -357,28 +371,23 @@ securityInputButton.addEventListener('click', async function () {
   console.log(response);
 
   if (response === 'Success!') {
-    securityInputMessage.style.display = 'inline-block';
-    securityInputMessage.style.fontWeight = 'bold';
-    securityInputMessage.style.color = 'green';
-    securityInputMessage.textContent =
-      'Success! Your security question has been saved.';
-    setTimeout(() => {
-      securityInputMessage.textContent = '';
-      securityInputMessage.style.color = '';
-      securityInputMessage.style.fontWeight = '';
-      securityInputMessage.style.display = 'none';
-    }, 5000);
+    const message = 'Success! Your security question has been saved.';
+    textContentAndStyling(
+      securityInputMessage,
+      'inline-block',
+      'bold',
+      'green',
+      message
+    );
   } else {
-    securityInputMessage.style.display = 'inline-block';
-    securityInputMessage.style.fontWeight = 'bold';
-    securityInputMessage.style.color = 'red';
-    securityInputMessage.textContent =
+    const message =
       'Error! There was a problem saving your security question. Please try again later.';
-    setTimeout(() => {
-      securityInputMessage.textContent = '';
-      securityInputMessage.style.color = '';
-      securityInputMessage.style.fontWeight = '';
-      securityInputMessage.style.display = 'none';
-    }, 5000);
+    textContentAndStyling(
+      securityInputMessage,
+      'inline-block',
+      'bold',
+      'red',
+      message
+    );
   }
 });

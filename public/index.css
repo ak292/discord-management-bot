@@ -1,8 +1,4 @@
 body {
-  /* overflow: hidden;
-  position: absolute;
-  width: 100%;
-  height: 100%; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -26,6 +22,24 @@ button:hover {
 button:active {
   background-color: white;
   color: black;
+}
+
+input {
+  height: 30px;
+  width: 250px;
+}
+
+a {
+  box-shadow: inset 0 0 0 0 #54b3d6;
+  color: #54b3d6;
+  font-weight: bold;
+  padding: 0 0.25rem;
+  transition: color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+a:hover {
+  box-shadow: inset 100px 0 0 0 #54b3d6;
+  color: white;
 }
 
 .intro-flex {
@@ -62,97 +76,7 @@ button:active {
   color: green;
 }
 
-/******************* CAREFUL OF THIS CSS, COPY PASTED ****************/
-.help-tip {
-  top: 18px;
-  right: 18px;
-  text-align: center;
-  background-color: black;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  font-size: 14px;
-  line-height: 26px;
-  cursor: default;
-  z-index: 1;
-}
-
-.help-tip:before {
-  content: '?';
-  font-weight: bold;
-  color: #fff;
-}
-
-.help-tip:hover p {
-  display: block;
-  transform-origin: 100% 0%;
-  -webkit-animation: fadeIn 0.3s ease-in-out;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-.help-tip p {
-  /* The tooltip */
-  display: none;
-  text-align: left;
-  background-color: #1e2021;
-  padding: 20px;
-  width: 300px;
-  border-radius: 3px;
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-  right: -4px;
-  color: #fff;
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-.help-tip p:before {
-  /* The pointer of the tooltip */
-  position: absolute;
-  content: '';
-  width: 0;
-  height: 0;
-  border: 6px solid transparent;
-  border-bottom-color: #1e2021;
-  right: 10px;
-  top: -12px;
-}
-
-.help-tip p:after {
-  /* Prevents the tooltip from being hidden */
-  width: 100%;
-  height: 40px;
-  content: '';
-  position: absolute;
-  top: -40px;
-  left: 0;
-}
-
-/* CSS animation */
-
-@-webkit-keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.6);
-  }
-
-  100% {
-    opacity: 100%;
-    transform: scale(1);
-  }
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 100%;
-  }
-}
-/******************* CAREFUL OF THIS CSS, COPY PASTED ****************/
-
 .drop-area {
-  /* margin: 1rem auto; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -240,11 +164,6 @@ button:active {
   font-size: 16px;
 }
 
-input {
-  height: 30px;
-  width: 250px;
-}
-
 .submit-csv-message {
   display: none;
 }
@@ -267,6 +186,7 @@ input {
 }
 
 .security-paragraph-message {
+  display: none;
   width: 500px;
   font-weight: bold;
 }
@@ -287,17 +207,90 @@ input {
   align-items: center;
 }
 
-/* COPIED CSS */
-a {
-  box-shadow: inset 0 0 0 0 #54b3d6;
-  color: #54b3d6;
-  margin: 0 -0.25rem;
-  padding: 0 0.25rem;
-  transition: color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+/******************* THE CSS FROM THIS POINT FORWARD IS COPY PASTED, I DO NOT TAKE CREDIT FOR IT ****************/
+.help-tip {
+  top: 18px;
+  right: 18px;
+  text-align: center;
+  background-color: black;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  line-height: 26px;
+  cursor: default;
+  z-index: 1;
 }
 
-/* COPIED CSS */
-a:hover {
-  box-shadow: inset 100px 0 0 0 #54b3d6;
-  color: white;
+.help-tip:before {
+  content: '?';
+  font-weight: bold;
+  color: #fff;
+}
+
+.help-tip:hover p {
+  display: block;
+  transform-origin: 100% 0%;
+  -webkit-animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.help-tip p {
+  /* The tooltip */
+  display: none;
+  text-align: left;
+  background-color: #1e2021;
+  padding: 20px;
+  width: 300px;
+  border-radius: 3px;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+  right: -4px;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.help-tip p:before {
+  /* The pointer of the tooltip */
+  position: absolute;
+  content: '';
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-bottom-color: #1e2021;
+  right: 10px;
+  top: -12px;
+}
+
+.help-tip p:after {
+  /* Prevents the tooltip from being hidden */
+  width: 100%;
+  height: 40px;
+  content: '';
+  position: absolute;
+  top: -40px;
+  left: 0;
+}
+
+/* CSS animation */
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  100% {
+    opacity: 100%;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
 }

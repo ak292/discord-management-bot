@@ -273,7 +273,6 @@ export function botListeningEvents() {
 
     let foundUserId = false;
 
-    // if user not in activeUsers, push user in, add bool value here ****************************************8
     for (let i = 0; i < activeUsers.length; i++) {
       if (Object.values(activeUsers[i])[0].includes(message.author.id)) {
         foundUserId = true;
@@ -281,6 +280,7 @@ export function botListeningEvents() {
       }
     }
 
+    // if user not in activeUsers, push user in, add bool value here ****************************************8
     if (!foundUserId) {
       activeUsers.push({
         id: message.author.id,
@@ -288,125 +288,76 @@ export function botListeningEvents() {
       });
     }
 
-    if (messageArray.length === 5) {
-      // for loop is for results object
-      for (let i = 0; i < results.length; i++) {
-        // reset matchFound for every row
-        matchFound = 0;
-
-        userFirstName = messageArray[0].toUpperCase();
-        userLastName = messageArray[1].toUpperCase();
-        userStudentNumber = messageArray[2].toUpperCase();
-        userLevel = messageArray[3].toUpperCase();
-        userCourseName = messageArray[4].toUpperCase();
-        userRoleInput = userCourseName;
-
-        if (abbreviationsMode) {
-          userCourseName = abbreviations[userCourseName];
-          console.log('user', userCourseName);
-          console.log('m234', Object.values(results[i])[csvValues.CourseName]);
-        }
-
-        if (userFirstName === Object.values(results[i])[csvValues.FirstName]) {
-          matchFound++;
-        } else {
-          continue;
-        }
-
-        if (userLastName === Object.values(results[i])[csvValues.LastName]) {
-          matchFound++;
-        } else {
-          continue;
-        }
-
-        if (
-          userStudentNumber ===
-          Object.values(results[i])[csvValues.StudentNumber]
-        ) {
-          matchFound++;
-        } else {
-          continue;
-        }
-
-        if (userLevel === Object.values(results[i])[csvValues.Level]) {
-          matchFound++;
-        } else {
-          continue;
-        }
-
-        if (
-          userCourseName.toUpperCase() ===
-          Object.values(results[i])[csvValues.CourseName].toUpperCase()
-        ) {
-          matchFound++;
-        } else {
-          continue;
-        }
-
-        if (matchFound === 5) break;
-      }
-    } else {
+    // this assumes messageArray is of length 6, so user typed Computer Science for example
+    // instead of ComputerScience. So just join the two together.
+    if (messageArray.length !== 5) {
       let courseName = messageArray[4] + messageArray[5];
       messageArray = messageArray.slice(0, 4);
       messageArray = [...messageArray, courseName];
+    }
 
-      for (let i = 0; i < results.length; i++) {
-        // reset matchFound for every row
-        matchFound = 0;
+    // now loop and try to find a match
+    // for loop is for results object
+    for (let i = 0; i < results.length; i++) {
+      // reset matchFound for every row
+      matchFound = 0;
 
-        userFirstName = messageArray[0].toUpperCase();
-        userLastName = messageArray[1].toUpperCase();
-        userStudentNumber = messageArray[2].toUpperCase();
-        userLevel = messageArray[3].toUpperCase();
-        userCourseName = messageArray[4].toUpperCase();
-        userRoleInput = userCourseName;
+      userFirstName = messageArray[0].toUpperCase();
+      userLastName = messageArray[1].toUpperCase();
+      userStudentNumber = messageArray[2].toUpperCase();
+      userLevel = messageArray[3].toUpperCase();
+      userCourseName = messageArray[4].toUpperCase();
+      userRoleInput = userCourseName;
 
-        if (abbreviationsMode) {
-          userCourseName = abbreviations[userCourseName];
-          console.log('user', userCourseName);
-          console.log(
-            'm35345345',
-            Object.values(results[i])[csvValues.CourseName]
-          );
-        }
-
-        if (userFirstName === Object.values(results[i])[csvValues.FirstName]) {
-          matchFound++;
-        } else {
-          continue;
-        }
-
-        if (userLastName === Object.values(results[i])[csvValues.LastName]) {
-          matchFound++;
-        } else {
-          continue;
-        }
-
-        if (
-          userStudentNumber ===
-          Object.values(results[i])[csvValues.StudentNumber]
-        ) {
-          matchFound++;
-        } else {
-          continue;
-        }
-
-        if (userLevel === Object.values(results[i])[csvValues.Level]) {
-          matchFound++;
-        } else {
-          continue;
-        }
-
-        if (
-          userCourseName === Object.values(results[i])[csvValues.CourseName]
-        ) {
-          matchFound++;
-        } else {
-          continue;
-        }
-
-        if (matchFound === 5) break;
+      if (abbreviationsMode) {
+        userCourseName = abbreviations[userCourseName];
       }
+
+      if (
+        userFirstName ===
+        Object.values(results[i])[csvValues.FirstName].toUpperCase()
+      ) {
+        matchFound++;
+      } else {
+        continue;
+      }
+
+      if (
+        userLastName ===
+        Object.values(results[i])[csvValues.LastName].toUpperCase()
+      ) {
+        matchFound++;
+      } else {
+        continue;
+      }
+
+      if (
+        userStudentNumber ===
+        Object.values(results[i])[csvValues.StudentNumber].toUpperCase()
+      ) {
+        matchFound++;
+      } else {
+        continue;
+      }
+
+      if (
+        userLevel === Object.values(results[i])[csvValues.Level].toUpperCase()
+      ) {
+        matchFound++;
+      } else {
+        continue;
+      }
+
+      if (
+        userCourseName.toUpperCase() ===
+        Object.values(results[i])[csvValues.CourseName].toUpperCase()
+      ) {
+        matchFound++;
+      } else {
+        continue;
+      }
+
+      if (matchFound === 5) break;
     }
 
     studentNumber = userStudentNumber;
@@ -479,13 +430,17 @@ async function nameAndRoleChanger() {
     'CREATIVECOMPUTING',
     'CYBERSECURITY',
     'DATASCIENCE',
+    'NETWORKS',
+    'MENG',
   ];
+
   let userRole = userRoleInput;
   let usersLevel = userLevel;
   userRole = userRole.toUpperCase();
 
-  // all options other than Software Eng = NONSE
-  if (nonEngineeringRoles.includes(userRole)) userRole = 'NONSE';
+  // all options other than Software Eng = NONSE, excluding MENG, since that is its own role
+  if (userRole !== 'MENG' && nonEngineeringRoles.includes(userRole))
+    userRole = 'NONSE';
 
   // grab all members from server to find match
   const members = await client.guilds.cache.get(guildID).members.fetch();
@@ -507,7 +462,14 @@ async function nameAndRoleChanger() {
             )
           );
 
-        let usersRole = usersLevel + userRole;
+        // MENG has no associated Level but all other roles do
+        let usersRole = '';
+        if (userRole !== 'MENG') {
+          usersRole = usersLevel + userRole;
+        } else {
+          usersRole = userRole;
+        }
+
         usersRole = usersRole.toUpperCase();
         member.roles.add(roles[usersRole]);
       }
@@ -572,8 +534,10 @@ export async function botCSVUpdater(path) {
                 break;
               case roles['L6NONSE']:
               case roles['L6SOFTWAREENGINEERING']:
+              case roles['MENG']:
                 member.roles.remove(roles['L6NONSE']);
                 member.roles.remove(roles['L6SOFTWAREENGINEERING']);
+                member.roles.remove(roles['MENG']);
                 member.roles.add(roles['ALUMNI']);
                 break;
               default:

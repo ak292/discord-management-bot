@@ -12,6 +12,39 @@ let abbreviationInputAmount = 0;
 let lastKnownStatus = '';
 let submitAbbreviations = false;
 
+// helper function for setting text content/styling
+function textContentAndStyling(
+  elementToModify,
+  displayStyle,
+  fontWeight,
+  color,
+  textContent
+) {
+  elementToModify.style.display = displayStyle;
+  elementToModify.style.fontWeight = fontWeight;
+  elementToModify.style.color = color;
+  elementToModify.textContent = textContent;
+  setTimeout(() => {
+    elementToModify.style.display = 'none';
+    elementToModify.textContent = '';
+    elementToModify.style.color = '';
+    elementToModify.style.fontWeight = '';
+    elementToModify.style.display = 'none';
+  }, 5000);
+}
+
+function buttonToggleAndStyling(
+  button,
+  buttonTextContent,
+  paragraphElement,
+  paragraphColor,
+  paragraphMessage
+) {
+  button.textContent = buttonTextContent;
+  paragraphElement.style.color = paragraphColor;
+  paragraphElement.textContent = paragraphMessage;
+}
+
 // when DOMContentLoaded, fetch from server last known status of security mode
 // to properly display on client even when page refeshes
 // this makes sure client and server side code is always in sync
@@ -21,14 +54,23 @@ async function initializeStatus() {
   console.log(lastKnownStatus);
 
   if (lastKnownStatus.length === 0 || lastKnownStatus === 'false') {
-    abbreviationButton.textContent = 'Enable';
-    abbreviationParagraph.style.color = 'red';
-    abbreviationParagraph.textContent =
-      'Abbreviation mode has been turned off.';
+    const paraMessage = 'Abbreviation mode has been turned off.';
+    buttonToggleAndStyling(
+      abbreviationButton,
+      'Enable',
+      abbreviationParagraph,
+      'red',
+      paraMessage
+    );
   } else {
-    abbreviationButton.textContent = 'Disable';
-    abbreviationParagraph.style.color = 'green';
-    abbreviationParagraph.textContent = 'Abbreviation mode has been turned on.';
+    const paraMessage = 'Abbreviation mode has been turned on.';
+    buttonToggleAndStyling(
+      abbreviationButton,
+      'Disable',
+      abbreviationParagraph,
+      'green',
+      paraMessage
+    );
   }
 }
 
@@ -37,18 +79,16 @@ document.addEventListener('DOMContentLoaded', initializeStatus);
 
 abbreviationButton.addEventListener('click', async function () {
   if (!submitAbbreviations) {
-    abbreviationParagraphMessage.style.display = 'inline-block';
-    abbreviationParagraphMessage.style.color = 'red';
-    abbreviationParagraphMessage.style.color = 'bold';
-    abbreviationParagraphMessage.style.textAlign = 'center';
-    abbreviationParagraphMessage.textContent =
+    const message =
       'Error! You cannot turn activation mode on until you have submit your abbreviation values.';
-    setTimeout(() => {
-      abbreviationParagraphMessage.textContent = '';
-      abbreviationParagraphMessage.style.color = '';
-      abbreviationParagraphMessage.style.fontWeight = '';
-      abbreviationParagraphMessage.style.display = 'none';
-    }, 5000);
+    textContentAndStyling(
+      abbreviationParagraphMessage,
+      'inline-block',
+      'bold',
+      'red',
+      message
+    );
+    abbreviationParagraphMessage.style.textAlign = 'center';
     return;
   }
 
@@ -56,14 +96,23 @@ abbreviationButton.addEventListener('click', async function () {
     abbreviationParagraph.textContent ===
     'Abbreviation mode has been turned off.'
   ) {
-    abbreviationButton.textContent = 'Disable';
-    abbreviationParagraph.style.color = 'green';
-    abbreviationParagraph.textContent = 'Abbreviation mode has been turned on.';
+    const paraMessage = 'Abbreviation mode has been turned on.';
+    buttonToggleAndStyling(
+      abbreviationButton,
+      'Disable',
+      abbreviationParagraph,
+      'green',
+      paraMessage
+    );
   } else {
-    abbreviationButton.textContent = 'Enable';
-    abbreviationParagraph.style.color = 'red';
-    abbreviationParagraph.textContent =
-      'Abbreviation mode has been turned off.';
+    const paraMessage = 'Abbreviation mode has been turned off.';
+    buttonToggleAndStyling(
+      abbreviationButton,
+      'Enable',
+      abbreviationParagraph,
+      'red',
+      paraMessage
+    );
   }
 
   const options = {
@@ -86,17 +135,15 @@ submitButton.addEventListener('click', async function () {
   });
 
   if (abbreviationInputAmount !== 9) {
-    submitMessage.style.display = 'inline-block';
-    submitMessage.style.fontWeight = 'bold';
-    submitMessage.style.color = 'red';
-    submitMessage.textContent =
+    const message =
       'Error! You must fill out all the values to submit. If you would like to skip one of the values, type "NA".';
-    setTimeout(() => {
-      submitMessage.textContent = '';
-      submitMessage.style.color = '';
-      submitMessage.style.fontWeight = '';
-      submitMessage.style.display = 'none';
-    }, 5000);
+    textContentAndStyling(
+      submitMessage,
+      'inline-block',
+      'bold',
+      'red',
+      message
+    );
     abbreviationInputs = [];
     abbreviationInputAmount = 0;
     return;
@@ -119,31 +166,26 @@ submitButton.addEventListener('click', async function () {
   console.log(response);
 
   if (response === 'Success!') {
-    submitMessage.style.display = 'inline-block';
-    submitMessage.style.fontWeight = 'bold';
-    submitMessage.style.color = 'green';
-    submitMessage.textContent =
-      'Success! Your abbreviations settings have been saved.';
-    setTimeout(() => {
-      submitMessage.textContent = '';
-      submitMessage.style.color = '';
-      submitMessage.style.fontWeight = '';
-      submitMessage.style.display = 'none';
-    }, 5000);
+    const message = 'Success! Your abbreviations settings have been saved.';
+    textContentAndStyling(
+      submitMessage,
+      'inline-block',
+      'bold',
+      'green',
+      message
+    );
     abbreviationInputs = [];
     abbreviationInputAmount = 0;
   } else {
-    submitMessage.style.display = 'inline-block';
-    submitMessage.style.fontWeight = 'bold';
-    submitMessage.style.color = 'red';
-    submitMessage.textContent =
+    const message =
       'Error! There was a problem saving your abbreviations settings. Please try again later.';
-    setTimeout(() => {
-      submitMessage.textContent = '';
-      submitMessage.style.color = '';
-      submitMessage.style.fontWeight = '';
-      submitMessage.style.display = 'none';
-    }, 5000);
+    textContentAndStyling(
+      submitMessage,
+      'inline-block',
+      'bold',
+      'red',
+      message
+    );
     abbreviationInputs = [];
     abbreviationInputAmount = 0;
   }
