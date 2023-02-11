@@ -12,28 +12,81 @@
   <body>
     <div class="intro-flex">
       <h1>Welcome to your Discord Management Bot Dashboard!</h1>
-      <h2>Below are some configuration options for your Discord Bot</h2>
+      <p>
+        Looking to verify new students who join the Discord server using a CSV?
+        See below.
+      </p>
+
+      <p>
+        Does your CSV file use abbreviations for the Course Name column? Click
+        <a classname="abbreviations-link" href="abbreviations.html">Here</a> to
+        customize your abbreviations.
+      </p>
     </div>
-    <div class="security-flex">
-      <p class="security-paragraph"></p>
-      <button class="security-button">Enable</button>
-      <div class="help-tip">
-        <p>
-          Enabling this option will make the bot ask users a security question
-          to confirm their identity upon them joining the Discord server. The
-          security question could be any uniquely identfying information you
-          have on each student to verify it's them. Make sure to place the
-          answers to the security question you choose in the 6th column of your
-          initial CSV file. By default, the question is set to "What is your
-          middle name?", but this can easily be changed in the code.
-        </p>
+    <div div class="csv-config">
+      <p class="options-msg">
+        Please number each column depending on how YOUR specific "verification"
+        CSV file is structured. This will help the bot understand how to parse
+        your CSV file.
+      </p>
+      <p class="submit-csv-message"></p>
+      <div class="main-container">
+        <div class="container-1-csv">
+          <label>First Name Column #:</label>
+          <input type="number" class="input-csv" min="0" />
+          <label>Last Name Column #:</label>
+          <input type="number" class="input-csv" min="0" />
+        </div>
+
+        <div class="container-2-csv">
+          <label>Student Number Column #:</label>
+          <input type="number" class="input-csv" min="0" />
+          <label>Level Column #:</label>
+          <input type="number" class="input-csv" min="0" />
+        </div>
+
+        <div class="container-3-csv">
+          <label>Course Name Column #:</label>
+          <input type="number" class="input-csv" min="0" />
+          <label>Security Question Column #:</label>
+          <input type="number" class="input-csv security-input" min="0" />
+        </div>
+      </div>
+      <button class="submit-csv">Submit</button>
+    </div>
+
+    <div class="security-message-container">
+      <p class="security-paragraph-message"></p>
+      <div class="security-flex">
+        <p class="security-paragraph"></p>
+        <button class="security-button">Enable</button>
+        <div class="help-tip">
+          <p>
+            Enabling this option will make the bot ask users a security question
+            to confirm their identity upon them joining the Discord server. This
+            is optional, as this security feature may not always be required,
+            and will require you to input a column number containing security
+            question answers in your CSV file. You can customize what security
+            question you'd like the bot to ask below.
+          </p>
+        </div>
       </div>
     </div>
+    <div class="security-input-container">
+      <div class="security-input-1">
+        <p class="security-input-message"></p>
+      </div>
+      <div class="security-input-2">
+        <label>If applicable, type your security question here.</label>
+        <input id="security-input" />
+        <button class="security-input-button">Submit</button>
+      </div>
+    </div>
+
     <div class="two-drag-drops">
       <div class="h3-upload">
         <h4 class="h3-progress">
-          Drag & Drop the initial CSV file containing the students information
-          to verify new students who join the Discord server
+          Drag & Drop your "verification" CSV file below.
         </h4>
         <p class="upload-message-two"></p>
 
@@ -42,29 +95,19 @@
           <p>Drop your CSV file here!</p>
           <div class="p-flex">
             <p>
-              <small
-                >CSV file has to follow a certain structure for the code to
-                work.</small
-              >
+              <small>Make sure you configure your CSV file above.</small>
             </p>
             <div class="help-tip">
               <p>
-                It is assumed that the first six columns of the CSV file will
-                contain the students First Name, Last Name, UP Number, Level,
-                Course Name, and Security Question Answer (like Middle Names)
-                respectively. I did not have access to the real UoP CSV file so
-                assumptions had to be made for this project.
+                Configure your CSV file using the options above so the bot can
+                understand how to parse your CSV file!
               </p>
             </div>
           </div>
         </section>
       </div>
-
       <div class="h3-upload">
-        <h4 class="h3-progress">
-          Drag & Drop the CSV file containing the students progress decisions
-          below to update student roles based on their progress decisions
-        </h4>
+        <h4 class="h3-progress">Drag & Drop progress decisions CSV file.</h4>
         <p class="upload-message"></p>
 
         <section class="drop-area" id="drop-area-one">
@@ -79,10 +122,10 @@
             </p>
             <div class="help-tip">
               <p>
-                It is assumed that the first and second columns of the CSV file
-                will contain the students UP numbers and the students progress
-                decisions respectively. I did not have access to the real UoP
-                CSV file so assumptions had to be made for this project.
+                Since the progress decisions CSV file only requires 2
+                (mandatory) columns, it is assumed that the first two columns of
+                the CSV file will contain the students UP numbers and the
+                students progress decisions respectively.
               </p>
             </div>
           </div>

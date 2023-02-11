@@ -16,13 +16,89 @@ let progressResults = [];
 
 // global variables required so I can make
 // use of them in mutliple functions below
-let middleName = '';
+let securityQuestionAnswer = '';
 let securityQuestion = false;
 let studentNumber = '';
 let securityMatchFound = false;
 let matchFound = 0;
 let messageArray = '';
 let messageAuthor = '';
+let userFirstName = '';
+let userLastName = '';
+let userStudentNumber = '';
+let userLevel = '';
+let userCourseName = '';
+
+// this array keeps track of users who are currently in the
+// proccess of verifying themselves with the bot
+// this is to avoid any collisions when two users are using the bot
+// at the same time. This is used in the Security feature
+let activeUsers = [];
+
+let foundUser = false;
+
+let abbreviationsMode = false;
+
+// object will be used if user decides to set their own
+// values for their csv file column numbers, otherwise
+// default values will be used. a -1 indicates value not given.
+const csvValues = {
+  FirstName: -1,
+  LastName: -1,
+  StudentNumber: -1,
+  Level: -1,
+  CourseName: -1,
+  SecurityQuestionAnswer: -1,
+};
+
+// function to change csvValues object to be used in
+// expressServer.js file
+export function changeCSVValues(arrInputValues) {
+  // if the array is of length 6, that means user must have submit
+  // a column number for the security question answer column
+  if (arrInputValues.length === 6) {
+    csvValues.SecurityQuestionAnswer = arrInputValues[5] - 1;
+  }
+  csvValues.FirstName = arrInputValues[0] - 1;
+  csvValues.LastName = arrInputValues[1] - 1;
+  csvValues.StudentNumber = arrInputValues[2] - 1;
+  csvValues.Level = arrInputValues[3] - 1;
+  csvValues.CourseName = arrInputValues[4] - 1;
+}
+
+const abbreviations = {
+  COMPUTERSCIENCE: '',
+  CYBERSECURITY: '',
+  COMPUTING: '',
+  NETWORKS: '',
+  SOFTWAREENGINEERING: '',
+  INFORMATIONSYSTEMS: '',
+  MENG: '',
+  DATASCIENCE: '',
+  CREATIVECOMPUTING: '',
+};
+
+export function changeAbbreviations(abbreviationValues) {
+  abbreviationsMode = true;
+  abbreviations.COMPUTERSCIENCE = abbreviationValues[0];
+  abbreviations.COMPUTING = abbreviationValues[1];
+  abbreviations.CYBERSECURITY = abbreviationValues[2];
+  abbreviations.INFORMATIONSYSTEMS = abbreviationValues[3];
+  abbreviations.COMPUTERNETWORKS = abbreviationValues[4];
+  abbreviations.SOFTWAREENGINEERING = abbreviationValues[5];
+  abbreviations.DATASCIENCE = abbreviationValues[6];
+  abbreviations.CREATIVECOMPUTING = abbreviationValues[7];
+  abbreviations.MENG = abbreviationValues[8];
+}
+
+// security question submit by user to be used in expressServer.js
+let customSecurityQuestion = '';
+
+// function to allow user to change the security question to whatever they want
+// to be used in expressServer.js
+export function changeCustomSecurityQuestion(inputQuestion) {
+  customSecurityQuestion = inputQuestion;
+}
 
 // used in expressServer.js to check if a CSV file
 // has been uploaded or not. if not, dont run bot function yet
@@ -35,7 +111,9 @@ export function changeInitialCSV() {
 }
 
 let lastKnownSecurityStatus = '';
+let lastKnownAbbreviationStatus = '';
 
+let userRoleInput = '';
 let roles = {
   L4NONSE: '1036313827983249468',
   L4SOFTWAREENGINEERING: '1036289578648215654',
@@ -43,6 +121,7 @@ let roles = {
   L5SOFTWAREENGINEERING: '1036289626446516274',
   L6NONSE: '1036313942005399553',
   L6SOFTWAREENGINEERING: '1036289659501805648',
+  MENG: '1073880628866592848',
   ALUMNI: '1066931568112848990',
 };
 
@@ -70,17 +149,10 @@ export function clearOutProgressResults() {
 export function initialCSVLoader(csvPath) {
   // load in CSV file
   fs.createReadStream(`${csvPath}`)
-    .pipe(
-      csv([
-        'FirstName',
-        'LastName',
-        'StudentNumber',
-        'Level',
-        'CourseName',
-        'MiddleName',
-      ])
-    )
-    .on('data', (data) => results.push(data))
+    .pipe(csv())
+    .on('data', (data) => {
+      results.push(data);
+    })
     .on('end', () => {
       console.log('Successfully loaded in CSV file.'.green);
     });
@@ -98,7 +170,7 @@ export function botListeningEvents() {
       \nBelow is a proper example of how to verify yourself, and all the course options are also below for your convenience.`
     );
     member.send(
-      `Example: Josh Smith UP12345 L5 Computer Science. \nCourse options: Computer Networks, Computer Science, Information Systems, Computing, Creative Computing, Cyber Security, Data Science, Software Engineering`
+      `Example: Josh Smith UP12345 L5 Computer Science. \nCourse options: Computer Networks, Computer Science, Information Systems, Computing, Creative Computing, Cyber Security, Data Science, Software Engineering, and MEng`
     );
   });
 
@@ -120,24 +192,68 @@ export function botListeningEvents() {
 
     // seperate event listener for the security question mode
     if (message.content.startsWith('!')) {
-      middleName = message.content.split('').slice(1).join('').toUpperCase();
+      securityMatchFound = false;
+      foundUser = false;
+      securityQuestionAnswer = message.content
+        .split('')
+        .slice(1)
+        .join('')
+        .toUpperCase();
 
-      for (let i = 0; i < results.length; i++) {
-        if (
-          Object.values(results[i])[2] === studentNumber &&
-          Object.values(results[i])[5] === middleName
-        ) {
-          securityMatchFound = true;
-          break;
-        } else {
-          securityMatchFound = false;
+      // if user tries to answer a security question BEFORE verifying any of their other original info
+      // this is just here as a simple safe guard to provide an appropriate error message to user
+      for (let i = 0; i < activeUsers.length; i++) {
+        if (Object.values(activeUsers[i])[0] === message.author.id) {
+          foundUser = true;
+        }
+      }
+
+      if (!foundUser) {
+        return message.reply(
+          'Error! You must verify your other information, as previously asked, before attempting to answer a security question.'
+        );
+      }
+
+      // **************************************************************** FIX BELOW CODE TO WORK WITH ACTIVEUSERS ARRAY OF ObjECTS
+      outerloop: for (let i = 0; i < results.length; i++) {
+        for (let j = 0; j < activeUsers.length; j++) {
+          if (
+            Object.values(results[i])[csvValues.StudentNumber] ===
+              Object.values(activeUsers[j])[1].toUpperCase() &&
+            Object.values(results[i])[csvValues.SecurityQuestionAnswer] ===
+              securityQuestionAnswer
+          ) {
+            // only if the user who typed message typed the value assosciated with their id
+            // this prevents issues if multiple users are using the bot at the same time (User A's answer cannot work for User B)
+            if (Object.values(activeUsers[j])[0] === message.author.id) {
+              securityMatchFound = true;
+              break outerloop;
+            }
+          } else {
+            securityMatchFound = false;
+          }
         }
       }
 
       if (!securityMatchFound) {
-        return message.reply('Incorrect answer. Please try again.');
+        // *********************************************************************************** find user who didnt get verifeid and remove from activeusers
+        for (let i = 0; i < activeUsers.length; i++) {
+          if (Object.values(activeUsers[i])[0] === message.author.id) {
+            activeUsers.splice(i, 1);
+          }
+        }
+
+        return message.reply(
+          'Incorrect answer. Sorry, you must restart the verification proccess. Please type your first name, surname, student number, level (L4/L5/L6), and course title in one message seperated by spaces.'
+        );
       } else {
         message.reply('Correct answer! Changing your nickname and role now.');
+        // *********************************************************************************** find user who did get verifeid and remove from activeusers
+        for (let i = 0; i < activeUsers.length; i++) {
+          if (Object.values(activeUsers[i])[0] === message.author.id) {
+            activeUsers.splice(i, 1);
+          }
+        }
 
         nameAndRoleChanger();
       }
@@ -155,47 +271,103 @@ export function botListeningEvents() {
       );
     }
 
-    if (messageArray.length === 5) {
-      // outer for loop is for results object
-      // inner for loop is for users message content
-      outerloop: for (let i = 0; i < results.length; i++) {
-        // reset matchFound for every row
-        matchFound = 0;
-        for (let j = 0; j < messageArray.length; j++) {
-          if (messageArray[j].toUpperCase() === Object.values(results[i])[j]) {
-            matchFound++;
-          }
+    let foundUserId = false;
 
-          if (matchFound === 5) break outerloop;
-        }
-      }
-    } else {
-      let courseName = messageArray[4] + messageArray[5];
-      messageArray = messageArray.slice(0, 4);
-      messageArray = [...messageArray, courseName];
-
-      outerloop: for (let i = 0; i < results.length; i++) {
-        // reset matchFound for every row
-        matchFound = 0;
-        for (let j = 0; j < messageArray.length; j++) {
-          if (messageArray[j].toUpperCase() === Object.values(results[i])[j]) {
-            matchFound++;
-          }
-          if (matchFound === 5) {
-            break outerloop;
-          }
-        }
+    for (let i = 0; i < activeUsers.length; i++) {
+      if (Object.values(activeUsers[i])[0].includes(message.author.id)) {
+        foundUserId = true;
+        break;
       }
     }
 
-    studentNumber = messageArray[2];
+    // if user not in activeUsers, push user in, add bool value here ****************************************8
+    if (!foundUserId) {
+      activeUsers.push({
+        id: message.author.id,
+        studentNumber: messageArray[2].toUpperCase(),
+      });
+    }
+
+    // this assumes messageArray is of length 6, so user typed Computer Science for example
+    // instead of ComputerScience. So just join the two together.
+    if (messageArray.length !== 5) {
+      let courseName = messageArray[4] + messageArray[5];
+      messageArray = messageArray.slice(0, 4);
+      messageArray = [...messageArray, courseName];
+    }
+
+    // now loop and try to find a match
+    // for loop is for results object
+    for (let i = 0; i < results.length; i++) {
+      // reset matchFound for every row
+      matchFound = 0;
+
+      userFirstName = messageArray[0].toUpperCase();
+      userLastName = messageArray[1].toUpperCase();
+      userStudentNumber = messageArray[2].toUpperCase();
+      userLevel = messageArray[3].toUpperCase();
+      userCourseName = messageArray[4].toUpperCase();
+      userRoleInput = userCourseName;
+
+      if (abbreviationsMode) {
+        userCourseName = abbreviations[userCourseName];
+      }
+
+      if (
+        userFirstName ===
+        Object.values(results[i])[csvValues.FirstName].toUpperCase()
+      ) {
+        matchFound++;
+      } else {
+        continue;
+      }
+
+      if (
+        userLastName ===
+        Object.values(results[i])[csvValues.LastName].toUpperCase()
+      ) {
+        matchFound++;
+      } else {
+        continue;
+      }
+
+      if (
+        userStudentNumber ===
+        Object.values(results[i])[csvValues.StudentNumber].toUpperCase()
+      ) {
+        matchFound++;
+      } else {
+        continue;
+      }
+
+      if (
+        userLevel === Object.values(results[i])[csvValues.Level].toUpperCase()
+      ) {
+        matchFound++;
+      } else {
+        continue;
+      }
+
+      if (
+        userCourseName.toUpperCase() ===
+        Object.values(results[i])[csvValues.CourseName].toUpperCase()
+      ) {
+        matchFound++;
+      } else {
+        continue;
+      }
+
+      if (matchFound === 5) break;
+    }
+
+    studentNumber = userStudentNumber;
 
     // total 5 rows should match, so if matchfound = 5
     // all rows matched and student is successfully identified
     if (matchFound === 5) {
       if (securityQuestion) {
         return await message.reply(
-          'For security purposes, please answer: What is your middle name? Type your answer with an exclamation mark followed by your middle name. For example: !Michael'
+          `For security purposes, please answer: ${customSecurityQuestion} Type your answer with an exclamation mark followed by your answer. For example: !Answer`
         );
       }
 
@@ -234,6 +406,20 @@ export function toggleLastKnownStatus() {
   }
 }
 
+export function getLastKnownAbbreviationStatus() {
+  return lastKnownAbbreviationStatus;
+}
+
+export function toggleLastKnownAbbreviationStatus() {
+  if (!lastKnownAbbreviationStatus || lastKnownAbbreviationStatus === '') {
+    lastKnownAbbreviationStatus = true;
+    return 'Last Known Abbreviation Status: Enabled.';
+  } else {
+    lastKnownAbbreviationStatus = false;
+    return 'Last Known Abbreviation Status: Disabled.';
+  }
+}
+
 // reusable function for changing users role and nickname
 // once they have been verified
 async function nameAndRoleChanger() {
@@ -244,13 +430,17 @@ async function nameAndRoleChanger() {
     'CREATIVECOMPUTING',
     'CYBERSECURITY',
     'DATASCIENCE',
+    'NETWORKS',
+    'MENG',
   ];
-  let userRole = messageArray[4];
-  let userLevel = messageArray[3];
+
+  let userRole = userRoleInput;
+  let usersLevel = userLevel;
   userRole = userRole.toUpperCase();
 
-  // all options other than Software Eng = NONSE
-  if (nonEngineeringRoles.includes(userRole)) userRole = 'NONSE';
+  // all options other than Software Eng = NONSE, excluding MENG, since that is its own role
+  if (userRole !== 'MENG' && nonEngineeringRoles.includes(userRole))
+    userRole = 'NONSE';
 
   // grab all members from server to find match
   const members = await client.guilds.cache.get(guildID).members.fetch();
@@ -258,19 +448,28 @@ async function nameAndRoleChanger() {
   members.forEach((member) => {
     try {
       if (member.user.id === messageAuthor) {
-        messageArray[0] = messageArray[0].toLowerCase();
-        messageArray[2] = messageArray[2].toLowerCase();
+        userFirstName = userFirstName.toLowerCase();
+        userStudentNumber = userStudentNumber.toLowerCase();
         member
           .setNickname(
-            `${messageArray[0][0].toUpperCase()}${messageArray[0]
+            `${userFirstName[0].toUpperCase()}${userFirstName
               .slice(1)
-              .toLowerCase()} ${messageArray[1][0].toUpperCase()} / ${
-              messageArray[2]
-            }`
+              .toLowerCase()} ${userLastName[0].toUpperCase()} / ${userStudentNumber}`
           )
-          .catch((e) => console.log(e, 'Error, invalid permissions.'));
+          .catch((e) =>
+            console.log(
+              `Error, bot does not have permission to set ${member.user.username} nickname.`
+            )
+          );
 
-        let usersRole = userLevel + userRole;
+        // MENG has no associated Level but all other roles do
+        let usersRole = '';
+        if (userRole !== 'MENG') {
+          usersRole = usersLevel + userRole;
+        } else {
+          usersRole = userRole;
+        }
+
         usersRole = usersRole.toUpperCase();
         member.roles.add(roles[usersRole]);
       }
@@ -335,8 +534,10 @@ export async function botCSVUpdater(path) {
                 break;
               case roles['L6NONSE']:
               case roles['L6SOFTWAREENGINEERING']:
+              case roles['MENG']:
                 member.roles.remove(roles['L6NONSE']);
                 member.roles.remove(roles['L6SOFTWAREENGINEERING']);
+                member.roles.remove(roles['MENG']);
                 member.roles.add(roles['ALUMNI']);
                 break;
               default:
