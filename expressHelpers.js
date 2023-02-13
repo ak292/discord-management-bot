@@ -1,11 +1,11 @@
+/* this file contains helper functions to be imported
+into expressServer.js file */
+
 import path from 'path';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 require('colors');
 const fs = require('fs');
-
-// this file contains helper functions to be imported
-// into expressServer.js file
 
 export function deleteCSVFiles(directory) {
   // clear out initialCSV folder before new CSV
