@@ -45,7 +45,7 @@ function buttonToggleAndStyling(
   paragraphElement.textContent = paragraphMessage;
 }
 
-// when DOMContentLoaded, fetch from server last known status of security mode
+// when DOMContentLoaded, fetch from server last known status of abbreviation mode
 // to properly display on client even when page refeshes
 // this makes sure client and server side code is always in sync
 async function initializeStatus() {
