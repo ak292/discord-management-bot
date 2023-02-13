@@ -295,8 +295,9 @@ export function botListeningEvents() {
       });
     }
 
-    // this assumes messageArray is of length 6, so user typed Computer Science for example
-    // instead of ComputerScience. So just join the two together.
+    // at this point, messageArray must either be of length 5 or 6 (based on previous checks done before this point)
+    // so if messageArray is of length 6, user must have typed Computer Science for example (with a space)
+    // instead of ComputerScience (with no space). So just join the two together.
     if (messageArray.length !== 5) {
       let courseName = messageArray[4] + messageArray[5];
       messageArray = messageArray.slice(0, 4);
