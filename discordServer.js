@@ -38,9 +38,9 @@ let foundUser = false;
 
 let abbreviationsMode = false;
 
-// object will be used if user decides to set their own
-// values for their csv file column numbers, otherwise
-// default values will be used. a -1 indicates value not given.
+// object will be used when user decides to set their own
+// values for their csv file column numbers, bot will not run
+// unless user supplies these values. -1 indicates no value given.
 const csvValues = {
   FirstName: -1,
   LastName: -1,
