@@ -291,7 +291,7 @@ submitCSV.addEventListener('click', async function () {
     submitSecurityColumn = true;
   }
 
-  // Either all 6 values are filled, or 5 values are filled and the missing one
+  // either all 6 values are filled, or 5 values are filled and the missing one
   // is the security question one (which is optional)
   if (
     filledInputs === 6 ||

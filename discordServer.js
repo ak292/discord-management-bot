@@ -165,11 +165,10 @@ export function botListeningEvents() {
   client.on('guildMemberAdd', (member) => {
     if (!initialCSV) return;
     member.send(
-      `Welcome to the server ${member.user.username}. If you wish to gain full access to the server, please type your first name, surname, student number, level (L4/L5/L6), and course title in one message seperated by spaces.
-      \nBelow is a proper example of how to verify yourself, and all the course options are also below for your convenience.`
+      `Welcome to the server ${member.user.username}. If you wish to gain full access to the server, please type your first name, surname, student number, level (L4/L5/L6), and course title in one message seperated by spaces. Here is an example: Josh Smith UP12345 L5 Computer Science.`
     );
     member.send(
-      `Example: Josh Smith UP12345 L5 Computer Science. \nCourse options: Computer Networks, Computer Science, Information Systems, Computing, Creative Computing, Cyber Security, Data Science, Software Engineering, and MEng`
+      `For your convenience, here are all the possible course options for you to select from: \nCourse options: Computer Networks, Computer Science, Information Systems, Computing, Creative Computing, Cyber Security, Data Science, Software Engineering, and MEng`
     );
   });
 
