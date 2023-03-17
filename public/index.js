@@ -46,7 +46,6 @@ function textContentAndStyling(
   elementToModify.style.color = color;
   elementToModify.textContent = textContent;
   setTimeout(() => {
-    elementToModify.style.display = 'none';
     elementToModify.textContent = '';
     elementToModify.style.color = '';
     elementToModify.style.fontWeight = '';
@@ -199,6 +198,13 @@ progressDropArea.addEventListener('drop', async (e) => {
 // send dropped csv file from client to server
 // using the FileReader() and reader.onload functions
 initialFileDropArea.addEventListener('drop', async (e) => {
+  if (!submitCSVCustomization) {
+    const message =
+      'Error with your upload! Please submit your CSV customization column numbers above before trying to submit your CSV.';
+    timeoutAndColor('red', 'green', message, uploadMessageTwo);
+    return;
+  }
+
   const dataTransfer = e.dataTransfer;
   let files = dataTransfer.files;
   if (files.length > 1) {
@@ -252,8 +258,10 @@ const securityInput = document.querySelector('.security-input');
 const submitCSVMessage = document.querySelector('.submit-csv-message');
 let filledInputs = 0;
 let inputValues = [];
+let submitCSVCustomization = false;
 
 submitCSV.addEventListener('click', async function () {
+  submitCSVCustomization = true;
   csvInputs.forEach((input) => {
     if (input.value < 0) input.value = 0;
 
