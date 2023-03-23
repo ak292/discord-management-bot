@@ -1,5 +1,7 @@
 # Discord-Management-Bot
 
+NOTE: The word "client" in this file refers to the person who will be making use of this bot, which will most likely be a University of Portsmouth staff member. The word "user" or "users" refers to the users or students in a Discord server.
+
 This is a Discord bot created to help manage the University of Portsmouth official Discord server. The bot has many functionalities built in to help manage a large Discord server like the University Discord server with the two main functionalities being:
 
   - Verifying new students who join the Discord server by reading a CSV file containing UoP students information which will be input by the client.
