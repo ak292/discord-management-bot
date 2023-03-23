@@ -1,28 +1,34 @@
 # Discord-Management-Bot
 
-- This is an engineering project that I will submit as part of my final year graduation project as a Computer Science student at the University of Portsmouth.
-- README to be updated.
+- This is a Discord bot created to help manage the University of Portsmouth official Discord server. The bot has many functionalities built in to help manage a large Discord server like the University Discord server with the two main functionalities being:
 
-# To-Do-List
+  - Verifying new students who join the Discord server by reading a CSV file containing UoP students information which will be input by the client.
+  - Updating students roles based on progress decisions at the end of the academic year by reading a CSV file containing the progress decisions of each student which will be input by the client.
 
-# Completed tasks
+- The bot also comes with a dashboard created with Node/Express to allow the client to input any neccessary CSV files to the bot and to toggle certain features such as security mode (a mode that allows the client to input a security question that users must answer when verifying themselves with the bot) on or off.
 
-- Make code more reusable/cleaner/add comments where neccessary (DONE)
-- Add (potentially) abbreviations feature, CS: Computer Science etc. (with MEng as well), but keep in mind MEng wont count for progress roles updating (DONE)
-- Add display none style to security message paragraph to fix spacing (DONE)
-- Make sure code works when security option enabled and is included in CSV file (DONE)
-- Add client side validations for things like turning security mode on requiring you to have a question etc. (DONE)
-- Add custom security question functionality (DONE)
-- When comparing message array to the object results, make it continue as soon as one option does not match, instead of having it loop through every single object waiting for it to reach 5 match count.
-- Fix issue with duplicate first/last names (DONE)
-- Change the client side from input into drag and drop file for CSV (DONE)
-- Finish working on the botCSVUpdate discord.js function to update roles (DONE)
-  - Make sure to remove a users old rank when giving them new one (DONE)
-- Delete old CSV files when new one is uploaded (DONE)
-- Test requirements (DONE)
+# Usage
+
+- See the [documentation](https://github.com/ak292/discord-management-bot/blob/main/DOCUMENTATION.md) for a full breakdown of the Express server file containing the API endpoints & the Discord server file containing all the main logic/functionality of the bot.
+
+# How to Test/Run the Bot (READ BEFORE INSTALLING)
+
+- Before following the installation instructions below, a few changes are required before the bot can successfully run in the Discord server you want it to run in. However, if you would like to skip all the steps below and jump right into testing the bot, you can simply join this [Discord server](https://discord.gg/kGdW5vbgWy) I have created for your convenience and you may ignore all the steps below. This Discord server already has the bot as a member inside it along with a few random Discord users that are in the Discord server for testing purposes (these users can be used to test the bots verification/progress decisions functionality). **However, if you would like to run the Discord bot in your own server, please continue reading the steps below.**
+
+1. Add the Discord bot to your server by clicking this <a href="https://discord.com/api/oauth2/authorize?client_id=1034879663111147570&permissions=8&scope=bot%20applications.commands" target="_blank">link</a>. This link will redirect you to the official Discord website and will ask you to authorize the Discord bot and allow it to join your server. It should be noted that you must have "Manager Server" privileges in the Discord server you would like to add the bot in or else this will not work.
+
+2. Grab the UID of the Discord server you would like to add the bot in. It is important to note that you must have developer mode activated to be able to grab Discord UIDs. This mode can easily be turned on in your user settings on Discord. Afterwards, go to line 10 in the [Discord server file](https://github.com/ak292/discord-management-bot/blob/main/discordServer.js) and change the value of the "guildID" variable to the UID you just grabbed. Afterwards, go to line 514 and replace the UID there with the UID you just grabbed as well.
+
+3. Since this bot was created specifically for the official UoP Discord server, it is assumed that the server will have L4/L5/L6 SE roles, L4/L5/L6 NON-SE roles, an L7MENG role, and an ALUMNI role. You need to grab the UID of each one of these roles in your Discord server and replace them accordingly in the "roles" object that can be found at line 116 of the [Discord server file](https://github.com/ak292/discord-management-bot/blob/main/discordServer.js). To grab the UID of a role in your Discord server, simply go to "Server Settings", then click "Roles", then right click on the role you want to copy and click "Copy ID".
+
+- That's it! You may now continue reading below to install and run the bot.
+
+# Requirements
+
+- Must have NodeJS installed.
 
 # Install
 
 1. Run npm install
 2. Run npm start
-3. Navigate to localhost:3000 in your browser
+3. Navigate to localhost:3000 in your browser to see the dashboard created using Node/Express. At this point, the bot will automatically be up and running in your Discord server as well, waiting for you to input a CSV file and interact with it.
