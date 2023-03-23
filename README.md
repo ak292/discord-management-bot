@@ -1,7 +1,8 @@
 # Discord-Management-Bot
 
-- This is an engineering project that I will submit as part of my final year graduation project as a Computer Science student at the University of Portsmouth.
-- README to be updated.
+- This is a Discord bot created to help manage the University of Portsmouth official Discord server. The bot has many functionalities built in to help manage a large Discord server with the two main functionalities being:
+- Verifying new students who join the Discord server by reading a CSV file containing UoP students information which will be input by the client.
+- Updating students roles based on progress decisions at the end of the academic year by reading a CSV file containing the progress decisions of each student which will be input by the client.
 
 # Usage
 
