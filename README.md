@@ -3,7 +3,9 @@
 - This is an engineering project that I will submit as part of my final year graduation project as a Computer Science student at the University of Portsmouth.
 - README to be updated.
 
-# To-Do-List
+# Usage
+
+- See the [documentation](https://github.com/ak292/discord-management-bot/blob/main/DOCUMENTATION.md) for a full breakdown of the Express server file containing the API endpoints & the Discord server file containing all the main logic/functionality of the bot.
 
 # Completed tasks
 
