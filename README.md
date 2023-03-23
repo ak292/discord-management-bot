@@ -5,7 +5,7 @@
   - Verifying new students who join the Discord server by reading a CSV file containing UoP students information which will be input by the client.
   - Updating students roles based on progress decisions at the end of the academic year by reading a CSV file containing the progress decisions of each student which will be input by the client.
 
-The bot also comes with a dashboard created with Node/Express to allow the client to input any neccessary CSV files to the bot and to toggle certain features such as security mode (a mode that allows the client to input a security question that users must answer when verifying themselves with the bot) on or off.
+- The bot also comes with a dashboard created with Node/Express to allow the client to input any neccessary CSV files to the bot and to toggle certain features such as security mode (a mode that allows the client to input a security question that users must answer when verifying themselves with the bot) on or off.
 
 # Usage
 
@@ -21,7 +21,7 @@ The bot also comes with a dashboard created with Node/Express to allow the clien
 
 3. Since this bot was created specifically for the official UoP Discord server, it is assumed that the server will have L4/L5/L6 SE roles, L4/L5/L6 NON-SE roles, an L7MENG role, and an ALUMNI role. You need to grab the UID of each one of these roles in your Discord server and replace them accordingly in the "roles" object that can be found at line 116 of the [Discord server file](https://github.com/ak292/discord-management-bot/blob/main/discordServer.js). To grab the UID of a role in your Discord server, simply go to "Server Settings", then click "Roles", then right click on the role you want to copy and click "Copy ID".
 
-That's it! You may now continue reading below to install and run the bot.
+- That's it! You may now continue reading below to install and run the bot.
 
 # Requirements
 
