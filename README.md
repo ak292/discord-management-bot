@@ -4,8 +4,8 @@ NOTE: The word "client" in this file refers to the person who will be making use
 
 This is a Discord bot created to help manage the University of Portsmouth official Discord server. The bot has many functionalities built in to help manage a large Discord server like the University Discord server with the two main functionalities being:
 
-  - Verifying new students who join the Discord server by reading a CSV file containing UoP students information which will be input by the client.
-  - Updating students roles based on progress decisions at the end of the academic year by reading a CSV file containing the progress decisions of each student which will be input by the client.
+- Verifying new students who join the Discord server by reading a CSV file containing UoP students information which will be input by the client.
+- Updating students roles based on progress decisions at the end of the academic year by reading a CSV file containing the progress decisions of each student which will be input by the client.
 
 The bot also comes with a dashboard created with Node/Express to allow the client to input any neccessary CSV files to the bot and to toggle certain features such as security mode (a mode that allows the client to input a security question that users must answer when verifying themselves with the bot) on or off.
 
@@ -13,11 +13,31 @@ The bot also comes with a dashboard created with Node/Express to allow the clien
 
 See the [documentation](https://github.com/ak292/discord-management-bot/blob/main/DOCUMENTATION.md) for a full breakdown of the Express server file containing the API endpoints & the Discord server file containing all the main logic/functionality of the bot.
 
-# How to Test/Run the Bot (READ BEFORE INSTALLING)
+How the bot verifies users:
+
+Once the client has input their verification CSV file containing the students information which can be easily done with a simple drag & drop in the NodeJS dashboard, the bot can use it to verify new users/students who join the Discord server. See an example of verification below:
+
+An example of a CSV file the client can input:
+
+[Image of successful verification](images/csvFileImage.png)
+
+An example of a user successfully verifying themself:
+
+[Image of successful verification](images/successful.png)
+
+As can be seen from the image above, the verification was successful because the user input correct details that were found in the CSV file that was input by the client. In this case, the user verified themselves using the information that can be found on the 5th row of the CSV file that was input.
+
+An example of a user unsuccessfully verifying themself:
+
+[Image of unsuccessful verification](images/unsuccessful.png)
+
+As can be seen from the image above, the verification was unsuccessful because the user input details that were not found in any rows of the CSV file that was input by the client.
+
+# How to Run Bot in Your Server (READ BEFORE INSTALLING)
 
 Before following the installation instructions below, a few changes are required before the bot can successfully run in the Discord server you want it to run in. However, if you would like to skip all the steps below and jump right into testing the bot, you can simply join this [Discord server](https://discord.gg/kGdW5vbgWy) I have created for your convenience and you may ignore all the steps below. This Discord server already has the bot as a member inside it along with a few random Discord users that are in the Discord server for testing purposes (these users can be used to test the bots verification/progress decisions functionality). **However, if you would like to run the Discord bot in your own server, please continue reading the steps below.**
 
-1. Add the Discord bot to your server by clicking this [link](https://discord.com/api/oauth2/authorize?client_id=1034879663111147570&permissions=8&scope=bot%20applications.commands). This link will redirect you to the official Discord website and will ask you to authorize the Discord bot and allow it to join your server. It should be noted that you must have "Manager Server" privileges in the Discord server you would like to add the bot in or else this will not work.
+1. Add the Discord bot to your server by clicking this [link](https://discord.com/api/oauth2/authorize?client_id=1034879663111147570&permissions=8&scope=bot%20applications.commands). This link will redirect you to the official Discord website and will ask you to authorize the Discord bot and allow it to join your server. It should be noted that you must have "Manage Server" privileges in the Discord server you would like to add the bot in or else this will not work.
 
 2. Grab the UID of the Discord server you would like to add the bot in. It is important to note that you must have developer mode activated to be able to grab Discord UIDs. This mode can easily be turned on in your user settings on Discord. Afterwards, go to line 10 in the [Discord server file](https://github.com/ak292/discord-management-bot/blob/main/discordServer.js) and change the value of the "guildID" variable to the UID you just grabbed. Afterwards, go to line 514 and replace the UID there with the UID you just grabbed as well.
 
