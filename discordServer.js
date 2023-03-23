@@ -469,7 +469,9 @@ async function nameAndRoleChanger() {
 
         let usersRole = usersLevel + userRole;
         usersRole = usersRole.toUpperCase();
-        member.roles.add(roles[usersRole]);
+        member.roles
+          .add(roles[usersRole])
+          .catch((e) => console.log('Error, invalid Role ID given.'));
       }
     } catch (e) {
       console.log(e);
