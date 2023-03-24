@@ -69,7 +69,7 @@ const abbreviations = {
   COMPUTERSCIENCE: '',
   CYBERSECURITY: '',
   COMPUTING: '',
-  NETWORKS: '',
+  COMPUTERNETWORKS: '',
   SOFTWAREENGINEERING: '',
   INFORMATIONSYSTEMS: '',
   MENG: '',
