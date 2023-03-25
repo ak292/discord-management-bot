@@ -27,6 +27,11 @@ An example of a user successfully verifying themself:
 
 As can be seen from the image above, the verification was successful because the user input correct details that were found in the CSV file that was input by the client. In this case, the user verified themselves using the information that can be found on the 5th row of the CSV file that was input.
 
+The following images show the Discord user in the server before being verified by the bot, and after being verified by the bot, respectively. Notice how the after image shows the users nickname changed accordingly as well as their level & role.
+
+![Image of user before verification](images/example2.png)
+![Image of user after verification](images/example1.png)
+
 An example of a user unsuccessfully verifying themself:
 
 ![Image of unsuccessful verification](images/unsuccessful.png)
