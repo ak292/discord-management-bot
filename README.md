@@ -75,6 +75,6 @@ Must have NodeJS installed.
 # Install
 
 1. Run npm install
-2. Run npm start - Running this command will concurrently start up both the Node/Express dashboard as well as the Discord bot.
+2. Run npm start - Running this command will concurrently start up both the Node/Express server as well as the Discord bot.
 3. Navigate to localhost:3000 in your browser to see the dashboard created using Node/Express. At this point, the bot will automatically be up and running in your Discord server as well, waiting for you to input a CSV file and interact with it.
-4. Once you've input a verification CSV file (there are many test files available in the csvTestFiles folder), you can DM the bot to interact with it and to attempt to verify yourself. You can also test other features such as the progress decisions role updating feature by inputting a progress decisions CSV file (there is a test one in the csvTestFiles folder as well). Other things such as security mode/abbreviations mode can be toggled on or off using the dashboard at localhost:3000.
+4. Once you've input a verification CSV file (there are many test files available in the csvTestFiles folder named dummydata1, dummydata2, dummydata3), you can DM the bot to interact with it and to attempt to verify yourself. You can also test other features such as the progress decisions role updating feature by inputting a progress decisions CSV file (there is a test file named progressDecisions.csv in the csvTestFiles folder as well). Other things such as security mode/abbreviations mode can be toggled on or off using the dashboard at localhost:3000.
