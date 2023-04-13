@@ -56,7 +56,7 @@ A GIF showing how the bot updates roles based on progress decisions:
 
 ![Gif showcasing the progress decision role updating feature](https://i.imgur.com/VqcyfeZ.gif)
 
-Note that because both of those students with those student numbers had received a "PROGRESS" decision, they progressed from Level 4 to Level 5 and then to Level 6. One progression was made for each time the CSV file was dragged. If they had received a "REPEAT" decision, they would not have progressed.
+Note that because both of those students with those student numbers had received a "PROGRESS" decision, they progressed from Level 4 to Level 5 and then to Level 6. One progression was made for each time the CSV file was dragged & dropped. If they had received a "REPEAT" decision, they would not have progressed.
 
 Other functionalties of the bot such as security mode (which allows for the client to input a security question for the bot to ask upon verification) or abbreviations mode (which allows the client to customize any abbreviations they may be using in their "Course Name" column in their CSV) are quite simple so they require no examples.
 
