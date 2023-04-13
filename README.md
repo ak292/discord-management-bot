@@ -64,7 +64,7 @@ Before following the installation instructions below, a few changes are required
 
 3. Since this bot was created specifically for the official UoP Discord server, it is assumed that the server will have L4/L5/L6 SE roles, L4/L5/L6 NON-SE roles, an L7MENG role, and an ALUMNI role, just like the UoP server does. You need to grab the UID of each one of these roles in your Discord server and replace them accordingly in the "roles" object that can be found on line 116 of the [Discord server file](https://github.com/ak292/discord-management-bot/blob/main/discordServer.js). To grab the UID of a role in your Discord server, simply go to "Server Settings", then click "Roles", then right click on the role you want to copy and click "Copy ID".
 
-4. Create a .env file and add this line to it: "TOKEN=MTAzNDg3OTY2MzExMTE0NzU3MA.G0HQvC.CWe6gU5eCr_dhlcx8TsT0UlaCjAb382c2bP8k8" without the quotation marks. Normally, it is obviously not a good idea to share the Discord bot token as this is a major security risk as it allows anyone to use the Discord bot maliciously, but for the purposes of this project I have made it public here as it is neccessary to get the bot up and running. This token will be discarded and renewed by me at a later date, before this repository is made public.
+4. Create a .env file and add this line to it: "TOKEN=MTAzNDg3OTY2MzExMTE0NzU3MA.G0HQvC.CWe6gU5eCr_dhlcx8TsT0UlaCjAb382c2bP8k8" without the quotation marks. Normally, it is obviously not a good idea to share the Discord bot token as this is a major security risk as it allows anyone to use the Discord bot maliciously, but for the purposes of this project I have made it public here as it is neccessary to get the bot up and running. **This token will be discarded and renewed by me at a later date, before this repository is made public.**
 
 That's it! You may now continue reading below to install and run the bot.
 
@@ -75,5 +75,6 @@ Must have NodeJS installed.
 # Install
 
 1. Run npm install
-2. Run npm start
+2. Run npm start - Running this command will concurrently start up both the Node/Express dashboard as well as the Discord bot.
 3. Navigate to localhost:3000 in your browser to see the dashboard created using Node/Express. At this point, the bot will automatically be up and running in your Discord server as well, waiting for you to input a CSV file and interact with it.
+4. Once you've input a verification CSV file (there are many test files available in the csvTestFiles folder), you can DM the bot to interact with it and to attempt to verify yourself. You can also test other features such as the progress decisions role updating feature by inputting a progress decisions CSV file (there is a test one in the csvTestFiles folder as well). Other things such as security mode/abbreviations mode can be toggled on or off using the dashboard at localhost:3000.
