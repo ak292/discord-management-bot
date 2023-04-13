@@ -34,6 +34,12 @@ The following images show the Discord user in the server before being verified b
 ![Image of user before verification](images/example2.png)
 ![Image of user after verification](images/example1.png)
 
+A GIF showing the verification process (Notice the nickname/role change in the Discord server on the right as soon as the user is verified):
+
+![Gif showcasing the verification process](https://i.imgur.com/o2VyG1f.gif)
+
+As you can see, the verification in the GIF worked because the information input was found in the CSV file, specifically on row 3 in this case.
+
 An example of a user unsuccessfully verifying themself:
 
 ![Image of unsuccessful verification](images/unsuccessful.png)
