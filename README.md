@@ -23,7 +23,7 @@ An example of a CSV file containing the students verification information that t
 
 ![Image of a CSV file containing students verification information](images/csvFileImage.png)
 
-An example of a user successfully verifying themself:
+An example of a user successfully verifying themself by DMing the bot:
 
 ![Image of successful verification](images/successful.png)
 
