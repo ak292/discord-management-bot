@@ -13,13 +13,15 @@ The bot also comes with a dashboard created with Node & Express to allow the cli
 
 See the [documentation](https://github.com/ak292/discord-management-bot/blob/main/DOCUMENTATION.md) for a full breakdown of the Express server file containing the API endpoints & the Discord server file containing all the main logic/functionality of the bot.
 
-Verification process of the bot:
+Examples for the two main features of the Discord bot (verifying students & updating roles based on progress decisions) will be shown below.
+
+### Verifying students
 
 Once the client has input their verification CSV file containing the students information which can be easily done with a simple drag & drop in the NodeJS dashboard, the bot can use it to verify new users/students who join the Discord server. See an example of verification below:
 
-An example of a CSV file the client can input:
+An example of a CSV file containing the students verification information that the client can input:
 
-![Image of successful verification](images/csvFileImage.png)
+![Image of a CSV file containing students verification information](images/csvFileImage.png)
 
 An example of a user successfully verifying themself:
 
@@ -38,7 +40,19 @@ An example of a user unsuccessfully verifying themself:
 
 As can be seen from the image above, the verification was unsuccessful because the user input details that were not found in any rows of the CSV file that was input by the client.
 
-Other functionaltiies of the bot such as security mode or updating roles using progress decisions are very easy to use, so they require no examples. For example, updating users roles in the server using a CSV file containing progress decisions is as simple as dropping the CSV file in the specified area in the Discord bot dashboard and the bot will automatically update the roles accordingly.
+### Updating roles based on progress decisions
+
+An example of a CSV file containing the progress decisions for each student (PROGRESS indicates the student has passed the year and will progress to the next level, REPEAT indicates the student has failed the year and must repeat) as well as their student number so they can be identified:
+
+![Image of a CSV file containing progress decisions](images/progressCSVFile.png)
+
+A GIF showing how the bot updates roles based on progress decisions:
+
+![Gif showcasing the progress decision role updating feature](https://i.imgur.com/VqcyfeZ.gif)
+
+Note that because both of those students with those student numbers had received a "PROGRESS" decision, they progressed from Level 4 to Level 5 and then to Level 6. One progression was made for each time the CSV file was dragged. If they had received a "REPEAT" decision, they would not have progressed.
+
+Other functionalties of the bot such as security mode (which allows for the client to input a security question for the bot to ask upon verification) or abbreviations mode (which allows the client to customize any abbreviations they may be using in their "Course Name" column in their CSV) are quite simple so they require no examples.
 
 # How to Run Bot in Your Server (READ BEFORE INSTALLING)
 
