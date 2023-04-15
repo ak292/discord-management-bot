@@ -85,7 +85,7 @@ Must have NodeJS installed.
 3. Navigate to localhost:3000 in your browser to see the dashboard created using Node/Express. At this point, the bot will automatically be up and running in your Discord server as well, waiting for you to input a CSV file and interact with it.
 4. Once you've input a verification CSV file (there are many test files available in the csvTestFiles folder named dummydata1, dummydata2, dummydata3):
 
-- You can start by DMing the bot to interact with it and you could attempt to verify yourself using any of the information found in the CSV test file of your choosing. 
-- It is also important to note that at this point, any new users who join the Discord server will automatically be DM'd by the bot, prompting them to verify themself. You can test this feature too by simply leaving the server the bot is in & rejoining it.
-- You can also test other features such as the progress decisions role updating feature by inputting a progress decisions CSV file (there is a test file named progressDecisions.csv in the csvTestFiles folder as well).
-- Other things such as security mode/abbreviations mode can be toggled on or off using the dashboard at localhost:3000.
+    - You can start by DMing the bot to interact with it and you could attempt to verify yourself using any of the information found in the CSV test file of your choosing. 
+    - It is also important to note that at this point, any new users who join the Discord server will automatically be DM'd by the bot, prompting them to verify themself. You can test this feature too by simply leaving the server the bot is in & rejoining it.
+    - You can also test other features such as the progress decisions role updating feature by inputting a progress decisions CSV file (there is a test file named progressDecisions.csv in the csvTestFiles folder as well).
+    - Other things such as security mode/abbreviations mode can be toggled on or off using the dashboard at localhost:3000.
