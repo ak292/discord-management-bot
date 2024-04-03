@@ -62,13 +62,13 @@ Other functionalties of the bot such as security mode (which allows for the clie
 
 # How to Run Bot in Your Server (READ BEFORE INSTALLING)
 
-1. Create a Discord bot from the Discord developer dashboard, and make sure to give the bot administrator priviledges when creating it, as the bot must have the ability to read and respond to messages, DM users, give roles, etc.
+1. Create a Discord bot from the Discord developer dashboard, and make sure to give the bot administrator privileges when creating it, as the bot must have the ability to read and respond to messages, DM users, give roles, etc.
 
 2. Grab the Discord bot token of the bot you just created, and paste it into a .env file in a variable called TOKEN. The .env file should be in the root of the directory. 
 
 3. Add the Discord bot to the server you would like to run the bot in. It should be noted that you must have "Manage Server" privileges in the Discord server you would like to add the bot in or else this will not work.
 
-4. Grab the UID of the Discord server you would like to add the bot in. It is important to note that you must have developer mode activated to be able to grab Discord UIDs. This mode can easily be turned on in your user settings on Discord. Afterwards, go to line 10 in the [Discord server file](https://github.com/ak292/discord-management-bot/blob/main/discordServer.js) and change the value of the "guildID" variable to the UID you just grabbed. Afterwards, go to line 514 and replace the UID there with the UID you just grabbed as well.
+4. Grab the UID of the Discord server you would like to add the bot in. It is important to note that you must have developer mode activated to be able to grab Discord UIDs. This mode can easily be turned on in your user settings on Discord. **Afterwards, go to line 10 in the [Discord server file](https://github.com/ak292/discord-management-bot/blob/main/discordServer.js) and change the value of the "guildID" variable to the UID you just grabbed. Afterwards, go to line 514 and replace the UID there with the UID you just grabbed as well.**
 
 5. Since this bot was created specifically for the official UoP Discord server, it is assumed that the server will have L4/L5/L6 SE roles (which represent Year 1, Year 2, and Year 3 Software Engineering students respectively), L4/L5/L6 NON-SE roles (which represent Year 1, Year 2, and Year 3 Non-Software Engineering students), an L7MENG role (which represents a masters level student), and an alumni role which is self-explanatory. This is exactly how the official University of Portsmouth Discord server is set up. **You will need to grab the UID of each one of these roles in your Discord server and replace them accordingly in the "roles" object that can be found on line 116 of the [Discord server file](https://github.com/ak292/discord-management-bot/blob/main/discordServer.js).** To grab the UID of a role in your Discord server, simply go to "Server Settings", then click "Roles", then right click on the role you want to copy and click "Copy ID".
 
