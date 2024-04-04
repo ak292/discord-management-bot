@@ -1,13 +1,13 @@
-import { createRequire } from 'module';
+import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-const { Client, GatewayIntentBits, Partials } = require('discord.js');
-require('dotenv/config');
-const csv = require('csv-parser');
-const fs = require('fs');
-require('colors');
+const { Client, GatewayIntentBits, Partials } = require("discord.js");
+require("dotenv/config");
+const csv = require("csv-parser");
+const fs = require("fs");
+require("colors");
 
 // guildID is the server ID (change as you wish)
-const guildID = '1034878587129569401';
+const guildID = "1211998821198987305";
 // results array from CSV file
 let results = [];
 
@@ -16,17 +16,17 @@ let progressResults = [];
 
 // global variables required so I can make
 // use of them in mutliple functions below
-let securityQuestionAnswer = '';
+let securityQuestionAnswer = "";
 let securityQuestion = false;
 let securityMatchFound = false;
 let matchFound = 0;
-let messageArray = '';
-let messageAuthor = '';
-let userFirstName = '';
-let userLastName = '';
-let userStudentNumber = '';
-let userLevel = '';
-let userCourseName = '';
+let messageArray = "";
+let messageAuthor = "";
+let userFirstName = "";
+let userLastName = "";
+let userStudentNumber = "";
+let userLevel = "";
+let userCourseName = "";
 
 // this array keeps track of users who are currently in the
 // proccess of verifying themselves with the bot
@@ -66,15 +66,15 @@ export function changeCSVValues(arrInputValues) {
 }
 
 const abbreviations = {
-  COMPUTERSCIENCE: '',
-  CYBERSECURITY: '',
-  COMPUTING: '',
-  COMPUTERNETWORKS: '',
-  SOFTWAREENGINEERING: '',
-  INFORMATIONSYSTEMS: '',
-  MENG: '',
-  DATASCIENCE: '',
-  CREATIVECOMPUTING: '',
+  COMPUTERSCIENCE: "",
+  CYBERSECURITY: "",
+  COMPUTING: "",
+  COMPUTERNETWORKS: "",
+  SOFTWAREENGINEERING: "",
+  INFORMATIONSYSTEMS: "",
+  MENG: "",
+  DATASCIENCE: "",
+  CREATIVECOMPUTING: "",
 };
 
 export function changeAbbreviations(abbreviationValues) {
@@ -91,7 +91,7 @@ export function changeAbbreviations(abbreviationValues) {
 }
 
 // security question submit by user to be used in expressServer.js
-let customSecurityQuestion = '';
+let customSecurityQuestion = "";
 
 // function to allow user to change the security question to whatever they want
 // to be used in expressServer.js
@@ -109,19 +109,19 @@ export function changeInitialCSV() {
   initialCSV = true;
 }
 
-let lastKnownSecurityStatus = '';
-let lastKnownAbbreviationStatus = '';
+let lastKnownSecurityStatus = "";
+let lastKnownAbbreviationStatus = "";
 
-let userRoleInput = '';
+let userRoleInput = "";
 let roles = {
-  L4NONSE: '1036313827983249468',
-  L4SOFTWAREENGINEERING: '1036289578648215654',
-  L5NONSE: '1036313889010352170',
-  L5SOFTWAREENGINEERING: '1036289626446516274',
-  L6NONSE: '1036313942005399553',
-  L6SOFTWAREENGINEERING: '1036289659501805648',
-  L7MENG: '1073880628866592848',
-  ALUMNI: '1066931568112848990',
+  L4NONSE: "1225550873833504902",
+  L4SOFTWAREENGINEERING: "1225550939520237640",
+  L5NONSE: "1225551020751589518",
+  L5SOFTWAREENGINEERING: "1225551072542851193",
+  L6NONSE: "1225551123729875094",
+  L6SOFTWAREENGINEERING: "1225551068721713274",
+  L7MENG: "1225551227476115496",
+  ALUMNI: "1225551275567878305",
 };
 
 // discord.js configuration
@@ -149,20 +149,20 @@ export function initialCSVLoader(csvPath) {
   // load in CSV file
   fs.createReadStream(`${csvPath}`)
     .pipe(csv())
-    .on('data', (data) => {
+    .on("data", (data) => {
       results.push(data);
     })
-    .on('end', () => {
-      console.log('Successfully loaded in CSV file.'.green);
+    .on("end", () => {
+      console.log("Successfully loaded in CSV file.".green);
     });
 }
 
 export function botListeningEvents() {
-  client.on('ready', () => {
+  client.on("ready", () => {
     console.log(`Bot successfully connected at ${client.user.tag}`.green);
   });
 
-  client.on('guildMemberAdd', (member) => {
+  client.on("guildMemberAdd", (member) => {
     if (!initialCSV) return;
     member.send(
       `Welcome to the server ${member.user.username}. If you wish to gain full access to the server, please type your first name, surname, student number, level (L4/L5/L6), and course title in one message seperated by spaces. Here is an example: Josh Smith UP12345 L5 Computer Science.`
@@ -172,7 +172,7 @@ export function botListeningEvents() {
     );
   });
 
-  client.on('messageCreate', async (message) => {
+  client.on("messageCreate", async (message) => {
     // line below so bot doesn't detect its own messages
     if (message.author.bot === true) {
       return;
@@ -185,18 +185,18 @@ export function botListeningEvents() {
 
     if (!initialCSV)
       return message.reply(
-        'No CSV file has been uploaded yet, so the bot cannot verify you. Please try again later.'
+        "No CSV file has been uploaded yet, so the bot cannot verify you. Please try again later."
       );
 
     // seperate event listener for the security question mode question
     // user answers security question with a !<ANSWER-HERE>
-    if (message.content.startsWith('!')) {
+    if (message.content.startsWith("!")) {
       securityMatchFound = false;
       foundUser = false;
       securityQuestionAnswer = message.content
-        .split('')
+        .split("")
         .slice(1)
-        .join('')
+        .join("")
         .toUpperCase();
 
       // check if user is in activeUsers, if not, see below
@@ -210,7 +210,7 @@ export function botListeningEvents() {
       // this is just here as a simple safe guard to provide an appropriate error message to user
       if (!foundUser) {
         return message.reply(
-          'Error! You must verify your other information, as previously asked, before attempting to answer a security question.'
+          "Error! You must verify your other information, as previously asked, before attempting to answer a security question."
         );
       }
 
@@ -247,10 +247,10 @@ export function botListeningEvents() {
         }
 
         return message.reply(
-          'Incorrect answer. Sorry, you must restart the verification proccess. Please type your first name, surname, student number, level (L4/L5/L6), and course title in one message seperated by spaces.'
+          "Incorrect answer. Sorry, you must restart the verification proccess. Please type your first name, surname, student number, level (L4/L5/L6), and course title in one message seperated by spaces."
         );
       } else {
-        message.reply('Correct answer! Changing your nickname and role now.');
+        message.reply("Correct answer! Changing your nickname and role now.");
         // find user who did get verified and remove from activeusers, they are done verification.
         for (let i = 0; i < activeUsers.length; i++) {
           if (Object.values(activeUsers[i])[0] === message.author.id) {
@@ -264,13 +264,13 @@ export function botListeningEvents() {
     }
 
     messageAuthor = message.author.id;
-    messageArray = message.content.split(' ');
+    messageArray = message.content.split(" ");
 
     // if user message is longer than 5 or 6 length, they have
     // incorrectly formatted their message (eg. extra spaces)
     if (messageArray.length !== 5 && messageArray.length !== 6) {
       return message.reply(
-        'Incorrect information provided. Please make sure you have spelled everything correctly and followed the proper format. Example: Josh Smith UP12345 L5 Computer Science'
+        "Incorrect information provided. Please make sure you have spelled everything correctly and followed the proper format. Example: Josh Smith UP12345 L5 Computer Science"
       );
     }
 
@@ -379,10 +379,10 @@ export function botListeningEvents() {
       nameAndRoleChanger();
 
       message.reply(
-        'Successfully identified. Changing your nickname & role now.'
+        "Successfully identified. Changing your nickname & role now."
       );
     } else {
-      message.reply('Cannot identify you. Invalid information provided.');
+      message.reply("Cannot identify you. Invalid information provided.");
     }
   });
 }
@@ -390,10 +390,10 @@ export function botListeningEvents() {
 export function securityMode() {
   if (securityQuestion) {
     securityQuestion = false;
-    return { msg: 'Security mode has been turned off.' };
+    return { msg: "Security mode has been turned off." };
   } else {
     securityQuestion = true;
-    return { msg: 'Security mode has been turned on.' };
+    return { msg: "Security mode has been turned on." };
   }
 }
 
@@ -402,12 +402,12 @@ export function getLastKnownStatus() {
 }
 
 export function toggleLastKnownStatus() {
-  if (!lastKnownSecurityStatus || lastKnownSecurityStatus === '') {
+  if (!lastKnownSecurityStatus || lastKnownSecurityStatus === "") {
     lastKnownSecurityStatus = true;
-    return 'Last Known Status: Enabled.';
+    return "Last Known Status: Enabled.";
   } else {
     lastKnownSecurityStatus = false;
-    return 'Last Known Status: Disabled.';
+    return "Last Known Status: Disabled.";
   }
 }
 
@@ -416,12 +416,12 @@ export function getLastKnownAbbreviationStatus() {
 }
 
 export function toggleLastKnownAbbreviationStatus() {
-  if (!lastKnownAbbreviationStatus || lastKnownAbbreviationStatus === '') {
+  if (!lastKnownAbbreviationStatus || lastKnownAbbreviationStatus === "") {
     lastKnownAbbreviationStatus = true;
-    return 'Last Known Abbreviation Status: Enabled.';
+    return "Last Known Abbreviation Status: Enabled.";
   } else {
     lastKnownAbbreviationStatus = false;
-    return 'Last Known Abbreviation Status: Disabled.';
+    return "Last Known Abbreviation Status: Disabled.";
   }
 }
 
@@ -429,14 +429,14 @@ export function toggleLastKnownAbbreviationStatus() {
 // once they have been verified
 async function nameAndRoleChanger() {
   let nonEngineeringRoles = [
-    'COMPUTERSCIENCE',
-    'INFORMATIONSYSTEMS',
-    'COMPUTING',
-    'CREATIVECOMPUTING',
-    'CYBERSECURITY',
-    'DATASCIENCE',
-    'NETWORKS',
-    'MENG',
+    "COMPUTERSCIENCE",
+    "INFORMATIONSYSTEMS",
+    "COMPUTING",
+    "CREATIVECOMPUTING",
+    "CYBERSECURITY",
+    "DATASCIENCE",
+    "NETWORKS",
+    "MENG",
   ];
 
   let userRole = userRoleInput;
@@ -444,8 +444,8 @@ async function nameAndRoleChanger() {
   userRole = userRole.toUpperCase();
 
   // all options other than Software Eng = NONSE, excluding MENG, since that is its own role
-  if (userRole !== 'MENG' && nonEngineeringRoles.includes(userRole))
-    userRole = 'NONSE';
+  if (userRole !== "MENG" && nonEngineeringRoles.includes(userRole))
+    userRole = "NONSE";
 
   // grab all members from server to find match
   const members = await client.guilds.cache.get(guildID).members.fetch();
@@ -471,7 +471,7 @@ async function nameAndRoleChanger() {
         usersRole = usersRole.toUpperCase();
         member.roles
           .add(roles[usersRole])
-          .catch((e) => console.log('Error, invalid Role ID given.'));
+          .catch((e) => console.log("Error, invalid Role ID given."));
       }
     } catch (e) {
       console.log(e);
@@ -488,10 +488,10 @@ function helperRoleUpdate(memberToEdit, roleRemoveId, roleAddId) {
 export async function botCSVUpdater(path) {
   // load in updated CSV file
   fs.createReadStream(`${path}`)
-    .pipe(csv(['StudentNumber', 'ProgressDecision']))
-    .on('data', (data) => progressResults.push(data))
-    .on('end', () => {
-      console.log('Successfully loaded in Progress Decision CSV file.'.green);
+    .pipe(csv(["StudentNumber", "ProgressDecision"]))
+    .on("data", (data) => progressResults.push(data))
+    .on("end", () => {
+      console.log("Successfully loaded in Progress Decision CSV file.".green);
     });
 
   // grab all members from server to find match
@@ -504,42 +504,42 @@ export async function botCSVUpdater(path) {
 
         if (
           nickName.includes(Object.values(progressResults[i])[0]) &&
-          Object.values(progressResults[i])[1] === 'PROGRESS'
+          Object.values(progressResults[i])[1] === "PROGRESS"
         ) {
           member.roles.cache.map((role) => {
             switch (role.id) {
               // this case below is just the "EVERYONE" role id assigned to ALL members
               // in the discord server by default, it does not count as a real role and
               // it has nothing to do with any of roles in the discord server
-              case '1034878587129569401':
+              case "1225543516805926955":
                 break;
-              case roles['L4NONSE']:
-                helperRoleUpdate(member, roles['L4NONSE'], roles['L5NONSE']);
+              case roles["L4NONSE"]:
+                helperRoleUpdate(member, roles["L4NONSE"], roles["L5NONSE"]);
                 break;
-              case roles['L4SOFTWAREENGINEERING']:
+              case roles["L4SOFTWAREENGINEERING"]:
                 helperRoleUpdate(
                   member,
-                  roles['L4SOFTWAREENGINEERING'],
-                  roles['L5SOFTWAREENGINEERING']
+                  roles["L4SOFTWAREENGINEERING"],
+                  roles["L5SOFTWAREENGINEERING"]
                 );
                 break;
-              case roles['L5NONSE']:
-                helperRoleUpdate(member, roles['L5NONSE'], roles['L6NONSE']);
+              case roles["L5NONSE"]:
+                helperRoleUpdate(member, roles["L5NONSE"], roles["L6NONSE"]);
                 break;
-              case roles['L5SOFTWAREENGINEERING']:
+              case roles["L5SOFTWAREENGINEERING"]:
                 helperRoleUpdate(
                   member,
-                  roles['L5SOFTWAREENGINEERING'],
-                  roles['L6SOFTWAREENGINEERING']
+                  roles["L5SOFTWAREENGINEERING"],
+                  roles["L6SOFTWAREENGINEERING"]
                 );
                 break;
-              case roles['L6NONSE']:
-              case roles['L6SOFTWAREENGINEERING']:
-              case roles['L7MENG']:
-                member.roles.remove(roles['L6NONSE']);
-                member.roles.remove(roles['L6SOFTWAREENGINEERING']);
-                member.roles.remove(roles['L7MENG']);
-                member.roles.add(roles['ALUMNI']);
+              case roles["L6NONSE"]:
+              case roles["L6SOFTWAREENGINEERING"]:
+              case roles["L7MENG"]:
+                member.roles.remove(roles["L6NONSE"]);
+                member.roles.remove(roles["L6SOFTWAREENGINEERING"]);
+                member.roles.remove(roles["L7MENG"]);
+                member.roles.add(roles["ALUMNI"]);
                 break;
               default:
                 console.log(
